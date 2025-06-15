@@ -1,0 +1,41 @@
+name: Vocabula CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v3
+
+      - name: 🧱 Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '>=22.16.0'
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🛠 Build frontend
+        run: npm run build
+
+      - name: ✅ Run Prisma Migrations
+        run: npx prisma migrate deploy
+
+      - name: 🚀 Trigger Vercel Production Deploy
+        run: |
+          curl -X POST "https://api.vercel.com/v1/integrations/deploy/${{ secrets.VERCEL_PROJECT_ID }}" \
+          -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{}'
