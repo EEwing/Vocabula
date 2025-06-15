@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  courses   Course[]
+}
+
+model Course {
+  id        String    @id @default(uuid())
+  title     String
+  ownerId   String
+  createdAt DateTime  @default(now())
+  chapters  Chapter[]
+  owner     User      @relation(fields: [ownerId], references: [id])
+}
+
+model Chapter {
+  id         String   @id @default(uuid())
+  courseId   String
+  title      String
+  orderIndex Int
+  isOptional Boolean  @default(false)
+  course     Course   @relation(fields: [courseId], references: [id])
+  lessons    Lesson[]
+}
+
+model Lesson {
+  id         String  @id @default(uuid())
+  chapterId  String
+  title      String
+  orderIndex Int
+  isOptional Boolean @default(false)
+  cards      Card[]
+  chapter    Chapter @relation(fields: [chapterId], references: [id])
+}
+
+model Card {
+  id          String  @id @default(uuid())
+  lessonId    String
+  term        String
+  translation String
+  wordType    String
+  hintForms   String?
+  hintExample String?
+  lesson      Lesson  @relation(fields: [lessonId], references: [id])
+}
