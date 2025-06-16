@@ -2,8 +2,6 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 
 export async function middleware(request) {
-  const shouldLog = !(request.nextUrl.pathname.startsWith('/socket.io') || request.nextUrl.pathname.startsWith('/monitoring'))
-  
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -72,8 +70,10 @@ export const config = {
      * - public folder
      * - /authreturn (auth callback)
      * - /api (API routes)
+     * - /socket (socket.io routes)
+     * - /monitoring (Sentry monitoring routes)
      * - /public (public routes)
      */
-    '/((?!_next/static|_next/image|favicon.ico|authreturn|api|public|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|authreturn|api|socket|monitoring|public|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 } 

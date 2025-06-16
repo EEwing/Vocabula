@@ -18,6 +18,9 @@ jobs:
       VERCEL_DEPLOY_URL: ${{ secrets.VERCEL_DEPLOY_URL }}
       NEXT_PUBLIC_SUPABASE_PROJECT_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_PROJECT_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+      NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
     steps:
       - name: 📥 Checkout repo
