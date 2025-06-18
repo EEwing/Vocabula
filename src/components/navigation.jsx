@@ -1,11 +1,7 @@
 "use client"
 
-import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { useEffect, useState } from "react"
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, SignOutButton } from "@clerk/nextjs"
 
 export function Navigation() {
@@ -14,9 +10,7 @@ export function Navigation() {
       <div className="flex h-14 items-center px-4 md:px-6">
         <div className="mr-8 flex">
           <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <span className="text-lg font-bold text-primary-foreground">V</span>
-            </div>
+            <img src="/vocabula.png" alt="Vocabula Logo" className="h-full w-auto max-h-14 rounded-lg object-contain" />
             <span className="hidden font-bold sm:inline-block">
               Vocabula
             </span>
