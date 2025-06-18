@@ -9,13 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.22.0",
     "@prisma/client": "^6.9.0",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@sentry/nextjs": "^9.29.0",
-    "@supabase/auth-ui-react": "^0.4.7",
-    "@supabase/ssr": "^0.6.1",
-    "@supabase/supabase-js": "^2.50.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.515.0",
@@ -31,6 +29,7 @@
     "@sentry/webpack-plugin": "^3.5.0",
     "@shadcn/ui": "^0.0.4",
     "@tailwindcss/postcss": "^4",
+    "@types/react": "19.1.8",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
     "prisma": "^6.9.0",

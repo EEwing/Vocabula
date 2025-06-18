@@ -20,7 +20,7 @@ enum CardProgressStatus {
 }
 
 model User {
-  id             String          @id @default(uuid()) @db.Uuid
+  id             String          @id
   email          String          @unique
   name           String?
   createdAt      DateTime        @default(now())
@@ -33,7 +33,7 @@ model User {
 model Course {
   id         String       @id @default(uuid()) @db.Uuid
   title      String
-  ownerId    String       @db.Uuid
+  ownerId    String       // Clerk user ID
   createdAt  DateTime     @default(now())
   chapters   Chapter[]
   owner      User         @relation(fields: [ownerId], references: [id])
@@ -82,7 +82,7 @@ model CardHint {
 
 model CardProgress {
   id             String             @id @default(uuid()) @db.Uuid
-  userId         String             @db.Uuid
+  userId         String             // Clerk user ID
   cardId         String             @db.Uuid
   status         CardProgressStatus
   timesSeen      Int                @default(0)
@@ -94,7 +94,7 @@ model CardProgress {
 
 model Enrollment {
   id          String   @id @default(uuid()) @db.Uuid
-  userId      String   @db.Uuid
+  userId      String   // Clerk user ID
   courseId    String   @db.Uuid
   entrolledAt DateTime @default(now())
   user        User     @relation(fields: [userId], references: [id])
@@ -104,7 +104,7 @@ model Enrollment {
 model ReviewSession {
   id        String              @id @default(uuid()) @db.Uuid
   student   User                @relation(fields: [studentId], references: [id])
-  studentId String              @db.Uuid
+  studentId String              // Clerk user ID
   createdAt DateTime            @default(now())
   cards     ReviewSessionCard[]
 }
