@@ -12,29 +12,18 @@ function slugify(str) {
     .replace(/\s+/g, '-')
 }
 
-export default function CourseForm({ topics, createCourse }) {
+export default function CourseForm({ topics, createCourse, baseUrl }) {
   const [name, setName] = useState('')
   const [slug, setSlug] = useState('')
   const [selectedTopics, setSelectedTopics] = useState([])
   const [loading, startTransition] = useTransition()
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
-  const [baseUrl, setBaseUrl] = useState('')
   const router = useRouter()
 
   useEffect(() => {
     setSlug(slugify(name))
   }, [name])
-
-  useEffect(() => {
-    // Try to get NEXT_PUBLIC_SITE_URL from env, fallback to window.location.origin
-    const envUrl = process.env.NEXT_PUBLIC_SITE_URL
-    if (envUrl) {
-      setBaseUrl(envUrl.replace(/\/$/, ''))
-    } else if (typeof window !== 'undefined') {
-      setBaseUrl(window.location.origin)
-    }
-  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -75,7 +64,7 @@ export default function CourseForm({ topics, createCourse }) {
         <input
           type="text"
           className="w-full border rounded px-3 py-2 bg-muted-foreground/10 font-mono"
-          value={slug ? `${baseUrl}/course/${slug}` : ''}
+          value={`${baseUrl}/${slug || ''}`}
           readOnly
         />
       </div>

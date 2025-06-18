@@ -7,7 +7,7 @@ const prisma = new PrismaClient()
 /**
  * Server action to fetch courses owned by a user.
  * @param {string} userId - The user's ID (UUID)
- * @returns {Promise<Array<{id: string, title: string, createdAt: string}>>}
+ * @returns {Promise<Array<{id: string, title: string, createdAt: string, slug: string, owner: {username: string}}>>}
  */
 export async function getOwnedCourses(userId) {
   if (!userId) return []
@@ -17,6 +17,12 @@ export async function getOwnedCourses(userId) {
       id: true,
       title: true,
       createdAt: true,
+      slug: true,
+      owner: {
+        select: {
+          username: true,
+        }
+      }
     },
     orderBy: { createdAt: 'desc' },
   })
@@ -26,7 +32,7 @@ export async function getOwnedCourses(userId) {
 /**
  * Server action to fetch courses a user is enrolled in.
  * @param {string} userId - The user's ID (UUID)
- * @returns {Promise<Array<{id: string, title: string, createdAt: string}>>}
+ * @returns {Promise<Array<{id: string, title: string, createdAt: string, slug: string, owner: {username: string}}>>}
  */
 export async function getEnrolledCourses(userId) {
   if (!userId) throw new Error('User ID is required')
@@ -38,6 +44,12 @@ export async function getEnrolledCourses(userId) {
           id: true,
           title: true,
           createdAt: true,
+          slug: true,
+          owner: {
+            select: {
+              username: true,
+            }
+          }
         },
       },
     },
@@ -98,5 +110,76 @@ export async function createTopic(name) {
   return prisma.topic.create({
     data: { name },
     select: { id: true, name: true },
+  })
+}
+
+/**
+ * Server action to fetch a course by username and slug.
+ * @param {string} username - The username of the course owner
+ * @param {string} slug - The course slug
+ * @returns {Promise<Object|null>}
+ */
+export async function getCourseByUsernameAndSlug(username, slug) {
+  if (!username || !slug) return null
+  
+  const course = await prisma.course.findFirst({
+    where: {
+      slug,
+      owner: {
+        username
+      }
+    },
+    include: {
+      owner: {
+        select: {
+          id: true,
+          name: true,
+          username: true,
+        }
+      },
+      topics: {
+        include: {
+          topic: {
+            select: {
+              id: true,
+              name: true,
+            }
+          }
+        }
+      },
+      chapters: {
+        orderBy: { orderIndex: 'asc' },
+        include: {
+          lessons: {
+            orderBy: { orderIndex: 'asc' },
+            select: {
+              id: true,
+              title: true,
+              orderIndex: true,
+              isOptional: true,
+            }
+          }
+        }
+      }
+    }
+  })
+  
+  return course
+}
+
+/**
+ * Server action to get current user data.
+ * @param {string} userId - The user's ID (UUID)
+ * @returns {Promise<{id: string, username: string, name: string}|null>}
+ */
+export async function getCurrentUser(userId) {
+  if (!userId) return null
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      username: true,
+      name: true,
+    }
   })
 } 

@@ -45,6 +45,8 @@ model Course {
   topics     CourseTopic[]
 
   @@unique([ownerId, slug])
+  @@index([slug])
+  @@index([ownerId])
 }
 
 model Topic {

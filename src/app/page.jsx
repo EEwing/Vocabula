@@ -32,7 +32,7 @@ export default async function Home() {
               {myCourses.map((course) => (
                 <Link 
                   key={course.id} 
-                  href={`/course/${course.id}`}
+                  href={`/course/${course.owner.username}/${course.slug}`}
                   className="block transition-transform hover:scale-[1.02]"
                 >
                   <Card className="h-full">
