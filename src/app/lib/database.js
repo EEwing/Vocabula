@@ -46,3 +46,27 @@ export async function getEnrolledCourses(userId) {
   // Return just the course objects
   return enrollments.map(e => e.course)
 } 
+
+/**
+ * Server action to fetch all topics.
+ * @returns {Promise<Array<{id: string, name: string}>>}
+ */
+export async function getAllTopics() {
+  return prisma.topic.findMany({
+    select: { id: true, name: true },
+    orderBy: { name: 'asc' },
+  })
+}
+
+/**
+ * Server action to create a new topic.
+ * @param {string} name - The name of the topic
+ * @returns {Promise<{id: string, name: string}>}
+ */
+export async function createTopic(name) {
+  if (!name || typeof name !== 'string') throw new Error('Invalid topic name')
+  return prisma.topic.create({
+    data: { name },
+    select: { id: true, name: true },
+  })
+} 
