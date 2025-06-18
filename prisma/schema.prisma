@@ -23,11 +23,14 @@ model User {
   id             String          @id
   email          String          @unique
   name           String?
+  username       String          @unique
   createdAt      DateTime        @default(now())
   courses        Course[]
   cardProgresses CardProgress[]
   enrollments    Enrollment[]
   reviewSessions ReviewSession[]
+
+  @@index([username])
 }
 
 model Course {
@@ -38,6 +41,26 @@ model Course {
   chapters   Chapter[]
   owner      User         @relation(fields: [ownerId], references: [id])
   Enrollment Enrollment[]
+  slug       String
+  topics     CourseTopic[]
+
+  @@unique([ownerId, slug])
+}
+
+model Topic {
+  id     String        @id @default(uuid()) @db.Uuid
+  name   String        @unique
+  courses CourseTopic[]
+}
+
+model CourseTopic {
+  id       String @id @default(uuid()) @db.Uuid
+  courseId String @db.Uuid
+  topicId  String @db.Uuid
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  topic    Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, topicId])
 }
 
 model Chapter {
