@@ -45,7 +45,37 @@ export async function getEnrolledCourses(userId) {
   })
   // Return just the course objects
   return enrollments.map(e => e.course)
-} 
+}
+
+/**
+ * Server action to create a course and its topic associations.
+ * @param {Object} params
+ * @param {string} params.name
+ * @param {string} params.slug
+ * @param {string} params.ownerId
+ * @param {string[]} params.topicIds
+ * @returns {Promise<{course: Object, courseTopics: Object[]}>}
+ */
+export async function createCourseWithTopics({ name, slug, ownerId, topicIds }) {
+  const course = await prisma.course.create({
+    data: {
+      title: name,
+      slug,
+      ownerId,
+    },
+  })
+  const courseTopics = await Promise.all(
+    (topicIds || []).map(topicId =>
+      prisma.courseTopic.create({
+        data: {
+          courseId: course.id,
+          topicId,
+        },
+      })
+    )
+  )
+  return { course, courseTopics }
+}
 
 /**
  * Server action to fetch all topics.
