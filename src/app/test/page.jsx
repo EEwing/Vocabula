@@ -1,5 +1,5 @@
 import { auth } from '@clerk/nextjs/server'
-import { RedirectToSignIn, useUser } from '@clerk/nextjs'
+import { RedirectToSignIn } from '@clerk/nextjs'
 
 export default async function Test(){
     const { userId } = await auth()

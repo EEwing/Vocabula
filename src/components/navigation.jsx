@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, SignOutButton } from "@clerk/nextjs"
+import { SignInButton, SignUpButton, SignedIn, SignedOut, SignOutButton } from "@clerk/nextjs"
 
 export function Navigation() {
   return (

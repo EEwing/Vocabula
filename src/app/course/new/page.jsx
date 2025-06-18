@@ -1,6 +1,6 @@
 import { auth } from '@clerk/nextjs/server'
 import { RedirectToSignIn } from '@clerk/nextjs'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default async function NewCourse() {
     const { userId } = await auth()
