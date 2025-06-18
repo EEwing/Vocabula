@@ -35,7 +35,7 @@ export async function getOwnedCourses(userId) {
  * @returns {Promise<Array<{id: string, title: string, createdAt: string, slug: string, owner: {username: string}}>>}
  */
 export async function getEnrolledCourses(userId) {
-  if (!userId) throw new Error('User ID is required')
+  if (!userId) return []
   const enrollments = await prisma.enrollment.findMany({
     where: { userId },
     include: {
