@@ -1,11 +1,12 @@
-"use client"
-
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { auth } from '@clerk/nextjs/server'
+import { RedirectToSignIn } from '@clerk/nextjs'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 
-export default function NewCourse() {
+export default async function NewCourse() {
+    const { userId } = await auth()
+    if(!userId) {
+        return <RedirectToSignIn />
+    }
   return (
     <div className="container py-8">
       <Card>

@@ -1,10 +1,14 @@
-"use client"
+import { auth } from '@clerk/nextjs/server'
+import { RedirectToSignIn } from '@clerk/nextjs'
 
-import { useParams } from "next/navigation"
+export default async function CoursePage({ params}) {
+    const { userId } = await auth()
+    if(!userId) {
+        return <RedirectToSignIn />
+    }
 
-export default function CoursePage() {
-    const params = useParams()
     const { courseId } = params
+    console.log("Course ID:", courseId)
 
     return <>
         <p>You're logged in!</p>
