@@ -69,10 +69,13 @@ model Chapter {
   id         String   @id @default(uuid()) @db.Uuid
   courseId   String   @db.Uuid
   title      String
+  slug       String
   orderIndex Int
   isOptional Boolean  @default(false)
   course     Course   @relation(fields: [courseId], references: [id])
   lessons    Lesson[]
+
+  @@unique([courseId, slug])
 }
 
 model Lesson {

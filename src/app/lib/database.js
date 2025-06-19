@@ -182,4 +182,67 @@ export async function getCurrentUser(userId) {
       name: true,
     }
   })
+}
+
+/**
+ * Server action to create a new chapter for a course.
+ * @param {Object} params
+ * @param {string} params.courseId
+ * @param {string} params.title
+ * @param {string} params.slug
+ * @param {boolean} params.isOptional
+ * @param {number} params.orderIndex
+ * @returns {Promise<Object>} The created chapter
+ */
+export async function createChapter({ courseId, title, slug, isOptional = false, orderIndex }) {
+  if (!courseId || !title || !slug || typeof orderIndex !== 'number') throw new Error('Missing required fields')
+  return prisma.chapter.create({
+    data: {
+      courseId,
+      title,
+      slug,
+      isOptional,
+      orderIndex,
+    },
+  })
+}
+
+/**
+ * Fetch a chapter by username, courseSlug, and chapterSlug.
+ * @param {string} username
+ * @param {string} courseSlug
+ * @param {string} chapterSlug
+ * @returns {Promise<Object|null>}
+ */
+export async function getChapterByUsernameAndSlugs(username, courseSlug, chapterSlug) {
+  if (!username || !courseSlug || !chapterSlug) return null
+  const chapter = await prisma.chapter.findFirst({
+    where: {
+      slug: chapterSlug,
+      course: {
+        slug: courseSlug,
+        owner: { username }
+      }
+    },
+    include: {
+      lessons: {
+        orderBy: { orderIndex: 'asc' },
+        select: {
+          id: true,
+          title: true,
+          orderIndex: true,
+          isOptional: true,
+        }
+      },
+      course: {
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          owner: { select: { username: true } }
+        }
+      }
+    }
+  })
+  return chapter
 } 
