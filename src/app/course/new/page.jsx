@@ -2,7 +2,6 @@ import { auth } from '@clerk/nextjs/server'
 import { RedirectToSignIn } from '@clerk/nextjs'
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { getAllTopics, createCourseWithTopics, getCurrentUser } from '@/app/lib/database'
-import dynamic from 'next/dynamic'
 
 // const CourseForm = dynamic(() => import('./CourseForm'), { ssr: false })
 import CourseForm from "@/app/course/new/CourseForm"

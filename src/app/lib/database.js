@@ -245,4 +245,137 @@ export async function getChapterByUsernameAndSlugs(username, courseSlug, chapter
     }
   })
   return chapter
+}
+
+/**
+ * Server action to create a new lesson for a chapter.
+ * @param {Object} params
+ * @param {string} params.chapterId
+ * @param {string} params.title
+ * @param {string} params.slug
+ * @param {boolean} params.isOptional
+ * @param {number} params.orderIndex
+ * @returns {Promise<Object>} The created lesson
+ */
+export async function createLesson({ chapterId, title, isOptional = false, orderIndex }) {
+  if (!chapterId || !title || typeof orderIndex !== 'number') throw new Error('Missing required fields')
+  return prisma.lesson.create({
+    data: {
+      chapterId,
+      title,
+      isOptional,
+      orderIndex,
+    },
+  })
+}
+
+/**
+ * Fetch a lesson by its id.
+ * @param {string} lessonId
+ * @returns {Promise<Object|null>}
+ */
+export async function getLessonById(lessonId) {
+  if (!lessonId) return null
+  const lesson = await prisma.lesson.findUnique({
+    where: { id: lessonId },
+    select: {
+      id: true,
+      title: true,
+      orderIndex: true,
+      isOptional: true,
+      cards: {
+        select: {
+          id: true,
+          term: true,
+          translation: true,
+        }
+      }
+    }
+  })
+  return lesson
+}
+
+/**
+ * Fetch a lesson by chapterId and orderIndex.
+ * @param {string} chapterId
+ * @param {number} orderIndex
+ * @returns {Promise<Object|null>}
+ */
+export async function getLessonByOrderIndex(chapterId, orderIndex) {
+  if (!chapterId || typeof orderIndex !== 'number') return null
+  const lesson = await prisma.lesson.findFirst({
+    where: {
+      chapterId,
+      orderIndex,
+    },
+    select: {
+      id: true,
+      title: true,
+      orderIndex: true,
+      isOptional: true,
+      slug: true,
+    }
+  })
+  return lesson
+}
+
+/**
+ * Fetch all cards for a lesson.
+ * @param {string} lessonId
+ * @returns {Promise<Array<{id: string, term: string, translation: string}>>}
+ */
+export async function getCardsForLesson(lessonId) {
+  if (!lessonId) return []
+  return prisma.card.findMany({
+    where: { lessonId },
+    select: { id: true, term: true, translation: true },
+    orderBy: { id: 'asc' },
+  })
+}
+
+/**
+ * Upsert cards for a lesson. Updates existing cards by id, creates new ones if no valid id.
+ * @param {string} lessonId
+ * @param {Array<{id?: string, term: string, translation: string}>} cards
+ * @returns {Promise<Array<Object>>}
+ */
+export async function saveCardsForLesson(lessonId, cards) {
+  if (!lessonId || !Array.isArray(cards)) throw new Error('Invalid input')
+  const results = []
+  for (const card of cards) {
+    if (card.term.trim() === '' && card.translation.trim() === '') continue
+    if (card.id && typeof card.id === 'string' && card.id.length > 10) {
+      // Try update
+      const updated = await prisma.card.update({
+        where: { id: card.id },
+        data: { term: card.term, translation: card.translation },
+      }).catch(() => null)
+      if (updated) {
+        results.push(updated)
+        continue
+      }
+    }
+    if (card.id === null) {
+      const created = await prisma.card.create({
+        data: {
+          lessonId,
+          term: card.term,
+          translation: card.translation,
+          wordType: '', // default, adjust as needed
+        }
+      })
+      results.push(created)
+    } else {
+      const created = await prisma.card.update({
+        where: { id: card.id },
+        data: {
+          term: card.term,
+          translation: card.translation,
+        }
+      })
+      results.push(created)
+    }
+    // Create new
+  }
+  return results
 } 
