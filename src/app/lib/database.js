@@ -1,8 +1,7 @@
 'use server'
 
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { dbCard, emptyCard } from './cardutils'
+import { prisma } from './prisma'
 
 /**
  * Server action to fetch courses owned by a user.
@@ -333,47 +332,47 @@ export async function getCardsForLesson(lessonId) {
   })
 }
 
+export async function deleteCards(cardIds) {
+  return prisma.card.deleteMany({
+    where: { id: { in: cardIds } },
+  })
+}
+
 /**
  * Upsert cards for a lesson. Updates existing cards by id, creates new ones if no valid id.
  * @param {string} lessonId
  * @param {Array<{id?: string, term: string, translation: string}>} cards
  * @returns {Promise<Array<Object>>}
  */
-export async function saveCardsForLesson(lessonId, cards) {
-  if (!lessonId || !Array.isArray(cards)) throw new Error('Invalid input')
+export async function saveCardsForLesson(lessonId, cardViews) {
+  if (!lessonId || !Array.isArray(cardViews)) throw new Error('Invalid input')
   const results = []
-  for (const card of cards) {
-    if (card.term.trim() === '' && card.translation.trim() === '') continue
-    if (card.id && typeof card.id === 'string' && card.id.length > 10) {
-      // Try update
-      const updated = await prisma.card.update({
-        where: { id: card.id },
-        data: { term: card.term, translation: card.translation },
-      }).catch(() => null)
-      if (updated) {
-        results.push(updated)
-        continue
-      }
+  for (const card of cardViews) {
+    if (card.term.trim() === '' && card.translation.trim() === '') {
+      results.push(card)
+      continue
     }
-    if (card.id === null) {
+    if (card.isNew) {
       const created = await prisma.card.create({
         data: {
           lessonId,
           term: card.term,
           translation: card.translation,
+          orderIndex: card.orderIndex,
           wordType: '', // default, adjust as needed
         }
       })
-      results.push(created)
+      results.push(dbCard(created))
     } else {
-      const created = await prisma.card.update({
+      const updated = await prisma.card.update({
         where: { id: card.id },
         data: {
           term: card.term,
           translation: card.translation,
+          orderIndex: card.orderIndex,
         }
       })
-      results.push(created)
+      results.push(dbCard(updated))
     }
     // Create new
   }

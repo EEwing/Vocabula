@@ -96,6 +96,7 @@ model Card {
   wordType          String
   hintForms         String?
   hintExample       String?
+  orderIndex        Int                 @default(0)
   lesson            Lesson              @relation(fields: [lessonId], references: [id])
   hints             CardHint[]
   CardProgress      CardProgress[]

@@ -4,24 +4,50 @@ import { CourseProvider } from '@/contexts/CourseContext'
 import { ChapterProvider } from '@/contexts/ChapterContext'
 import { LessonProvider } from '@/contexts/LessonContext'
 import CardTable from './CardTable'
+import { AddCardButton, SaveCardsButton } from './CardField'
 import Flashcard from './Flashcard'
+import PermissionGate from '@/components/PermissionGate'
+import { prisma } from '@/app/lib/prisma'
 
 export default async function LessonPage({ params }) {
   const { username, slug: courseSlug, chapter: chapterSlug, lesson: lessonId } = await params
-  const lesson = await getLessonById(lessonId)
-  if (!lesson) notFound()
-  const chapter = await getChapterByUsernameAndSlugs(username, courseSlug, chapterSlug)
-  if (!chapter) notFound()
-  const course = await getCourseByUsernameAndSlug(username, courseSlug)
-  if (!course) notFound()
+  const courseOwner = await prisma.user.findUnique({
+    where: { username: username },
+    select: { id: true }
+  })
+  const pageData = await prisma.course.findUnique({
+    where: { ownerId_slug: { ownerId: courseOwner.id, slug: courseSlug } },
+    include: {
+      chapters: {
+        where: { slug: chapterSlug },
+        include: {
+          lessons: {
+            where: { id: lessonId },
+            include: {
+              cards: true
+            }
+          }
+        }
+      }
+    }
+  })
+
+  if(!pageData?.chapters[0]?.lessons[0]) notFound()
+
   return (
-    <CourseProvider course={course}>
-      <ChapterProvider chapter={chapter}>
-        <LessonProvider lesson={lesson}>
+    <CourseProvider course={pageData}>
+      <ChapterProvider chapter={pageData.chapters[0]}>
+        <LessonProvider lesson={pageData.chapters[0].lessons[0]}>
           <div className="container mx-auto px-4 py-8">
-            <h1 className="text-2xl font-bold mb-4">{lesson.title}</h1>
+            <h1 className="text-2xl font-bold mb-4">{pageData.chapters[0].lessons[0].title}</h1>
             <Flashcard />
-            <CardTable />
+            <div className="mb-4">
+              <CardTable lesson={pageData.chapters[0].lessons[0]}/>
+              <PermissionGate objectType="lesson" object={pageData.chapters[0].lessons[0]} check="owner" negate>
+                <AddCardButton />
+                <SaveCardsButton />
+              </PermissionGate>
+            </div>
           </div>
         </LessonProvider>
       </ChapterProvider>

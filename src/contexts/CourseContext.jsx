@@ -45,17 +45,6 @@ export function useCourse() {
 }
 
 /**
- * Hook to check if current user is the course owner.
- * Must be used within a CourseProvider.
- * 
- * @returns {boolean} True if current user is the course owner
- */
-export function useIsCourseOwner() {
-  const { isOwner } = useCourse()
-  return isOwner
-}
-
-/**
  * Component that renders its children only if the current user is the owner of the course.
  * Must be used within a CourseProvider.
  * 
