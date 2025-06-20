@@ -2,9 +2,13 @@
 
 import { CardField, RemoveCardButton } from './CardField'
 import { useLesson } from "@/contexts/LessonContext"
+import { notFound } from 'next/navigation'
+import { usePermissions } from '@/contexts/PermissionsContext'
 
 export default function CardTable() {
   const {cards} = useLesson()
+  const {isOwner} = usePermissions()
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full border rounded-xl bg-white dark:bg-gray-900">
@@ -12,45 +16,22 @@ export default function CardTable() {
           <tr>
             <th className="px-4 py-2 text-left">Term</th>
             <th className="px-4 py-2 text-left">Translation</th>
-              {/* <PermissionGate 
-                objectType={"Lesson"} 
-                object={lesson}
-                check="owner"
-                >
-                <th className="px-4 py-2"></th>
-              </PermissionGate> */}
+              {isOwner && <th className="px-4 py-2"></th>}
           </tr>
         </thead>
         <tbody>
           {cards && cards.map((card, idx) => (
             <tr key={card.id}>
               <td className="px-4 py-2">
-                <CardField
-                  cardId={card.id}
-                  field="term"
-                  idx={idx}
-                />
+                <CardField cardId={card.id} field="term" idx={idx} />
               </td>
               <td className="px-4 py-2">
-                <CardField
-                  cardId={card.id}
-                  field="translation"
-                  idx={idx}
-                />
+                <CardField cardId={card.id} field="translation" idx={idx} />
               </td>
+              { isOwner && 
               <td className="px-2 py-2 text-center">
                 <RemoveCardButton cardId={card.id}>X</RemoveCardButton>
-              </td>
-              {/* <PermissionGate 
-                objectType={"Lesson"} 
-                object={lesson}
-                check="owner"
-                negate
-                >
-                <td className="px-2 py-2 text-center">
-                  <RemoveCardButton cardId={card.id}>X</RemoveCardButton>
-                </td>
-              </PermissionGate> */}
+              </td>}
             </tr>
           ))}
         </tbody>

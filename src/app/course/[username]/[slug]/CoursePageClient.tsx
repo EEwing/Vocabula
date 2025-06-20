@@ -4,12 +4,13 @@ import { useState } from 'react'
 import { Separator } from '@/components/ui/separator'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import CourseOwnerOnly from '@/components/CourseOwnerOnly'
 import ChapterFormModal from '@/components/ChapterFormModal'
 import Link from 'next/link'
+import { usePermissions } from '@/contexts/PermissionsContext'
 
 export default function CoursePageClient({ course }) {
   const [modalOpen, setModalOpen] = useState(false)
+  const { isOwner } = usePermissions()
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -44,7 +45,7 @@ export default function CoursePageClient({ course }) {
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
               Chapters
             </h2>
-            <CourseOwnerOnly>
+            {isOwner && <>
               <Button onClick={() => setModalOpen(true)}>
                 New Chapter
               </Button>
@@ -55,7 +56,7 @@ export default function CoursePageClient({ course }) {
                 courseId={course.id}
                 onChapterCreated={() => window.location.reload()}
               />
-            </CourseOwnerOnly>
+            </>}
           </div>
           {course.chapters.length === 0 ? (
             <Card>
