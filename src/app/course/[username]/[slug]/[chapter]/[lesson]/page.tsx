@@ -42,7 +42,7 @@ export default async function LessonPage({ params }) {
             <h1 className="text-2xl font-bold mb-4">{pageData.chapters[0].lessons[0].title}</h1>
             <Flashcard />
             <div className="mb-4">
-              <CardTable lesson={pageData.chapters[0].lessons[0]}/>
+              <CardTable />
               <PermissionGate objectType="lesson" object={pageData.chapters[0].lessons[0]} check="owner" negate>
                 <AddCardButton />
                 <SaveCardsButton />

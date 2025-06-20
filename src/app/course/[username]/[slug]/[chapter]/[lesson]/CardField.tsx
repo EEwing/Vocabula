@@ -29,7 +29,7 @@ export function CardField({cardId, field, idx}) {
         data-row={idx}
         data-col={field}
         value={field === "term" ? card?.term : card?.translation}
-        onChange={e => updateField(e.target.value)}
+        onChange={e => updateField((e.target as HTMLInputElement).value)}
         onKeyDown={e => handleKeyDown(e, idx)}
         placeholder="Enter term"
         className="w-full"

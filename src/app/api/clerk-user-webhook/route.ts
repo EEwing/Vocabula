@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { faker } from '@faker-js/faker';
+import { UserJSON } from "@clerk/nextjs/dist/types/server";
 
 const prisma = new PrismaClient();
 
@@ -27,7 +28,7 @@ export async function POST(req) {
     const evt = await verifyWebhook(req);
 
     // Clerk sends the user object in the webhook payload
-    const { id, email_addresses, first_name, last_name, username } = evt.data;
+    const { id, email_addresses, first_name, last_name, username } = evt.data as UserJSON;
 
     if (evt.type === "user.created") {
         let uniqueUsername;

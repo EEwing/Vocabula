@@ -311,8 +311,7 @@ export async function getLessonByOrderIndex(chapterId, orderIndex) {
       id: true,
       title: true,
       orderIndex: true,
-      isOptional: true,
-      slug: true,
+      isOptional: true
     }
   })
   return lesson

@@ -51,7 +51,7 @@ export default async function Home() {
           </div>
           : 
           <CardContent>
-                You don't own any courses yet. <Link href="/course/new" className="text-accent hover:underline">Create one</Link> to get started!
+                You don&apos;t own any courses yet. <Link href="/course/new" className="text-accent hover:underline">Create one</Link> to get started!
           </CardContent>
         }
       </Card>

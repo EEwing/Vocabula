@@ -86,7 +86,7 @@ export default function ChapterFormModal({ open, onOpenChange, courseSlug, cours
             <Input
               id="chapter-name"
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={e => setName((e.target as HTMLInputElement).value)}
               required
               placeholder="Enter chapter name"
               autoFocus
@@ -105,7 +105,7 @@ export default function ChapterFormModal({ open, onOpenChange, courseSlug, cours
             <Checkbox
               id="chapter-optional"
               checked={isOptional}
-              onCheckedChange={setIsOptional}
+              onCheckedChange={checked => setIsOptional(checked === 'indeterminate' ? false : checked)}
             />
             <Label htmlFor="chapter-optional">Optional</Label>
           </div>

@@ -13,7 +13,7 @@ export default function ErrorBoundary({ error }) {
     <div className="flex min-h-screen flex-col items-center justify-center p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-center font-mono text-sm">
         <h1 className="text-4xl font-bold mb-8 text-center">Something went wrong!</h1>
-        <p className="text-center mb-8">We've been notified and are working on fixing the issue.</p>
+        <p className="text-center mb-8">We&apos;ve been notified and are working on fixing the issue.</p>
         <div className="flex justify-center">
           <button
             onClick={() => window.location.reload()}

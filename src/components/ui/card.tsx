@@ -2,25 +2,29 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+export interface CardProps extends React.ButtonHTMLAttributes<HTMLDivElement> {}
+  
 function Card({
   className,
   ...props
-}) {
+}: CardProps) {
   return (
     <div
       data-slot="card"
       className={cn(
         "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
         className
-      )}
+      )} 
       {...props} />
   );
 }
 
+export interface CardHeaderProps extends React.ButtonHTMLAttributes<HTMLDivElement> {}
+
 function CardHeader({
   className,
   ...props
-}) {
+}: CardHeaderProps) {
   return (
     <div
       data-slot="card-header"
@@ -32,10 +36,12 @@ function CardHeader({
   );
 }
 
+export interface CardTitleProps extends React.ButtonHTMLAttributes<HTMLDivElement> {}
+
 function CardTitle({
   className,
   ...props
-}) {
+}: CardTitleProps) {
   return (
     <div
       data-slot="card-title"
@@ -71,17 +77,21 @@ function CardAction({
   );
 }
 
+export interface CardContentProps extends React.ButtonHTMLAttributes<HTMLDivElement> {}
+
 function CardContent({
   className,
   ...props
-}) {
+}: CardContentProps) {
   return (<div data-slot="card-content" className={cn("px-6", className)} {...props} />);
 }
+
+export interface CardFooterProps extends React.ButtonHTMLAttributes<HTMLDivElement> {}
 
 function CardFooter({
   className,
   ...props
-}) {
+}: CardFooterProps) {
   return (
     <div
       data-slot="card-footer"
