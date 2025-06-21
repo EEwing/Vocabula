@@ -49,7 +49,6 @@ export default async function ChapterPage({ params }) {
     <CourseProvider course={pageData}>
       <ChapterProvider chapter={pageData.chapters[0]}>
         <PermissionsProvider isOwner={isOwner} isEnrolled={isEnrolled}>
-          <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-4">{pageData.chapters[0].title}</h1>
             {pageData.chapters[0].lessons.length === 0 ? (
               <Card className="text-muted-foreground">No lessons in this chapter yet.</Card>
@@ -77,7 +76,6 @@ export default async function ChapterPage({ params }) {
               </div>
             )}
             <LessonManager chapterId={pageData.chapters[0].id} chapterSlug={pageData.chapters[0].slug} />
-          </div>
         </PermissionsProvider>
       </ChapterProvider>
     </CourseProvider>

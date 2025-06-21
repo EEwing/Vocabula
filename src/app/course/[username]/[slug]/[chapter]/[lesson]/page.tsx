@@ -44,14 +44,12 @@ export default async function LessonPage({ params }) {
       <ChapterProvider chapter={pageData.chapters[0]}>
         <LessonProvider lesson={pageData.chapters[0].lessons[0]}>
           <PermissionsProvider isOwner={isOwner} isEnrolled={isEnrolled}>
-            <div className="container mx-auto px-4 py-8">
-              <h1 className="text-2xl font-bold mb-4">{pageData.chapters[0].lessons[0].title}</h1>
-              <Flashcard />
-              <div className="mb-4">
-                <CardTable />
-                {isOwner && <AddCardButton/>}
-                {isOwner && <SaveCardsButton/>}
-              </div>
+            <h1 className="text-2xl font-bold mb-4">{pageData.chapters[0].lessons[0].title}</h1>
+            <Flashcard />
+            <div className="mb-4">
+              <CardTable />
+              {isOwner && <AddCardButton/>}
+              {isOwner && <SaveCardsButton/>}
             </div>
           </PermissionsProvider>
         </LessonProvider>

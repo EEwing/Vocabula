@@ -28,8 +28,8 @@ export default function Flashcard() {
 
   return (
     <div className="flex flex-col items-center mb-8">
-      <div className="relative w-80 h-48 mb-4 cursor-pointer" style={{ perspective: '1000px' }} onClick={handleFlip}>
-        <div className={`relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] ${flipped ? '[transform:rotateY(180deg)]' : ''}`}> 
+      <div className="relative w-full lg:w-1/2 mb-4 cursor-pointer" style={{ perspective: '1000px' }} onClick={handleFlip}>
+        <div className={`relative w-full aspect-video transition-transform duration-500 [transform-style:preserve-3d] ${flipped ? '[transform:rotateY(180deg)]' : ''}`}> 
           {/* Front Face */}
           <Card className="absolute w-full h-full flex items-center justify-center text-2xl font-semibold select-none [backface-visibility:hidden]">
             <CardContent className="flex items-center justify-center w-full h-full">

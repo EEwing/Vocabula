@@ -29,7 +29,7 @@ export default async function Home() {
   const myCourses = allCourses.filter(c => c.ownerId === userId)
   const enrolledCourses = allCourses.filter(c => c.enrollments.some(e => e.userId === userId))
 
-  return <div className="container py-8">
+  return <>
     <Card>
       <CardHeader>
         <CardTitle>Welcome to Vocabula</CardTitle>
@@ -106,5 +106,5 @@ export default async function Home() {
         }
       </Card>
     </SignedIn>
-  </div>
+  </>
 }
