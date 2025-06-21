@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation'
-import { getChapterByUsernameAndSlugs, getCourseByUsernameAndSlug } from '@/app/lib/database'
 import Link from 'next/link'
 import LessonManager from './LessonManager'
 import { CourseProvider } from '@/contexts/CourseContext'
@@ -23,14 +22,25 @@ export default async function ChapterPage({ params }) {
       chapters: {
         where: { slug: chapterSlug },
         include: {
-          lessons: true
+          lessons: {
+            orderBy: { orderIndex: 'asc' },
+            select: {
+              id: true,
+              title: true,
+              orderIndex: true,
+              isOptional: true,
+              _count: {
+                select: { cards: true }
+              }
+            }
+          }
         }
       },
-      Enrollment: true
+      enrollments: true
     }
   })
   const isOwner = pageData.ownerId === userId
-  const isEnrolled = pageData.Enrollment.some(e => e.userId === userId)
+  const isEnrolled = pageData.enrollments.some(e => e.userId === userId)
 
   if(!pageData?.chapters[0]) notFound()
 
@@ -49,6 +59,11 @@ export default async function ChapterPage({ params }) {
                     <Link href={`/course/${username}/${courseSlug}/${chapterSlug}/${lesson.id}`} className="font-medium text-blue-600 hover:underline dark:text-blue-400">
                       {lesson.title}
                     </Link>
+                    {typeof lesson._count?.cards === 'number' && (
+                      <span className="ml-2 text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full">
+                        {lesson._count.cards} card{lesson._count.cards !== 1 ? 's' : ''}
+                      </span>
+                    )}
                     {lesson.isOptional && (
                       <span className="ml-2 text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded">Optional</span>
                     )}

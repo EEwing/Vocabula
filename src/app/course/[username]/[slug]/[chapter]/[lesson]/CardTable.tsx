@@ -2,7 +2,6 @@
 
 import { CardField, RemoveCardButton } from './CardField'
 import { useLesson } from "@/contexts/LessonContext"
-import { notFound } from 'next/navigation'
 import { usePermissions } from '@/contexts/PermissionsContext'
 
 export default function CardTable() {

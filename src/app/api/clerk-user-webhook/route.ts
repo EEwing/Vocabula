@@ -42,7 +42,7 @@ export async function POST(req) {
                     data: {
                         id,
                         email: email_addresses[0]?.email_address || "",
-                        name: [first_name, last_name].filter(Boolean).join(" ") || null,
+                        name: [first_name, last_name].filter(n => n !== null).join(" ") || null,
                         username: uniqueUsername,
                     }
                 });

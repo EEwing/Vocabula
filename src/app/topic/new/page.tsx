@@ -1,9 +1,10 @@
-import { getAllTopics, createTopic } from '@/app/lib/database'
+import { createTopic } from '@/app/lib/database'
 import TopicManager from './TopicManager'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { prisma } from '@/app/lib/prisma'
 
 export default async function NewTopicPage() {
-  const topics = await getAllTopics()
+  const topics = await prisma.topic.findMany()
 
   // Define a server action for creating a topic
   async function handleCreateTopic(name) {

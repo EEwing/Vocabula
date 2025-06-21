@@ -1,4 +1,3 @@
-import { getCourseByUsernameAndSlug } from '@/app/lib/database'
 import { notFound } from 'next/navigation'
 import { CourseProvider } from '@/contexts/CourseContext'
 import CoursePageClient from './CoursePageClient'
@@ -11,27 +10,42 @@ export default async function CoursePage({ params }) {
 
   const {userId} = await auth()
 
-  const courseOwner = await prisma.user.findUnique({
-    where: { username: username },
-    select: { id: true }
-  })
-  const pageData = await prisma.course.findUnique({
-    where: { ownerId_slug: { ownerId: courseOwner.id, slug: slug } },
+  const pageData = await prisma.course.findFirst({
+    where: { owner: { username: username }, slug: slug },
     include: {
-      chapters: true,
-      Enrollment: true
+      chapters: {
+        include: {
+          lessons: true
+        }
+      },
+      enrollments: true,
+      topics: {
+        select: {
+          topic: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
+        }
+      },
+      owner: {
+        select: {
+          username: true,
+          name: true
+        }
+      }
     }
   })
-  const isOwner = pageData.ownerId === userId
-  const isEnrolled = pageData.Enrollment.some(e => e.userId === userId)
-  const course = await getCourseByUsernameAndSlug(username, slug)
-  if (!course) {
+  if (!pageData) {
     notFound()
   }
+  const isOwner = pageData.ownerId === userId
+  const isEnrolled = pageData.enrollments.some(e => e.userId === userId)
   return (
-    <CourseProvider course={course}>
+    <CourseProvider course={pageData}>
       <PermissionsProvider isOwner={isOwner} isEnrolled={isEnrolled}>
-        <CoursePageClient course={course} />
+        <CoursePageClient />
       </PermissionsProvider>
     </CourseProvider>
   )

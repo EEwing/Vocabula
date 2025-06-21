@@ -1,10 +1,12 @@
 import { auth } from '@clerk/nextjs/server'
 import { RedirectToSignIn } from '@clerk/nextjs'
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { getAllTopics, createCourseWithTopics, getCurrentUser } from '@/app/lib/database'
+import { createCourseWithTopics } from '@/app/lib/database'
 
 // const CourseForm = dynamic(() => import('./CourseForm'), { ssr: false })
 import CourseForm from "@/app/course/new/CourseForm"
+import { prisma } from '@/app/lib/prisma'
+import { notFound } from 'next/navigation'
 
 export default async function NewCourse() {
   const { userId } = await auth()
@@ -12,8 +14,13 @@ export default async function NewCourse() {
       return <RedirectToSignIn />
   }
   
-  const topics = await getAllTopics()
-  const currentUser = await getCurrentUser(userId)
+  const topics = await prisma.topic.findMany()
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { username: true }
+  })
+
+  if(!user) notFound()
   
   // Get base URL from environment or construct it
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 
@@ -42,7 +49,7 @@ export default async function NewCourse() {
           <CourseForm 
             topics={topics} 
             createCourse={createCourse} 
-            baseUrl={`${baseUrl}/course/${currentUser?.username}`}
+            baseUrl={`${baseUrl}/course/${user?.username}`}
           />
         </CardContent>
       </Card>

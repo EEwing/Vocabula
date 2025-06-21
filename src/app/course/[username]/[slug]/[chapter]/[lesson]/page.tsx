@@ -14,12 +14,8 @@ export default async function LessonPage({ params }) {
 
   const {userId} = await auth()
 
-  const courseOwner = await prisma.user.findUnique({
-    where: { username: username },
-    select: { id: true }
-  })
-  const pageData = await prisma.course.findUnique({
-    where: { ownerId_slug: { ownerId: courseOwner.id, slug: courseSlug } },
+  const pageData = await prisma.course.findFirst({
+    where: { owner: {username: username}, slug: courseSlug },
     include: {
       chapters: {
         where: { slug: chapterSlug },
@@ -32,7 +28,7 @@ export default async function LessonPage({ params }) {
           }
         }
       },
-      Enrollment: {
+      enrollments: {
         where: { userId: userId }
       }
     }
@@ -41,7 +37,7 @@ export default async function LessonPage({ params }) {
   if(!pageData?.chapters[0]?.lessons[0]) notFound()
 
   const isOwner = pageData.ownerId === userId
-  const isEnrolled = pageData.Enrollment.length > 0
+  const isEnrolled = pageData.enrollments.length > 0
 
   return (
     <CourseProvider course={pageData}>

@@ -6,8 +6,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
 export default function Flashcard() {
-  const lesson = useLesson()
-  const cards = lesson.cards || []
+  const {cards} = useLesson()
   const [current, setCurrent] = useState(0)
   const [flipped, setFlipped] = useState(false)
 

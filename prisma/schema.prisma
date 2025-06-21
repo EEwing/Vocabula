@@ -20,38 +20,46 @@ enum CardProgressStatus {
 }
 
 model User {
-  id             String          @id
-  email          String          @unique
-  name           String?
-  username       String          @unique
-  createdAt      DateTime        @default(now())
+  id        String   @id
+  email     String   @unique
+  name      String
+  username  String   @unique
+  createdAt DateTime @default(now())
+
+  // Relationships
   courses        Course[]
   cardProgresses CardProgress[]
   enrollments    Enrollment[]
   reviewSessions ReviewSession[]
 
+  // Constraints
   @@index([username])
 }
 
 model Course {
-  id         String       @id @default(uuid()) @db.Uuid
-  title      String
-  ownerId    String       // Clerk user ID
-  createdAt  DateTime     @default(now())
-  chapters   Chapter[]
-  owner      User         @relation(fields: [ownerId], references: [id])
-  Enrollment Enrollment[]
-  slug       String
-  topics     CourseTopic[]
+  id        String   @id @default(uuid()) @db.Uuid
+  ownerId   String
+  title     String
+  slug      String
+  createdAt DateTime @default(now())
 
+  // Relationships
+  owner       User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  chapters    Chapter[]
+  enrollments Enrollment[]
+  topics      CourseTopic[]
+
+  // Constraints
   @@unique([ownerId, slug])
   @@index([slug])
   @@index([ownerId])
 }
 
 model Topic {
-  id     String        @id @default(uuid()) @db.Uuid
-  name   String        @unique
+  id   String @id @default(uuid()) @db.Uuid
+  name String @unique
+
+  // Relationships
   courses CourseTopic[]
 }
 
@@ -59,22 +67,28 @@ model CourseTopic {
   id       String @id @default(uuid()) @db.Uuid
   courseId String @db.Uuid
   topicId  String @db.Uuid
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  topic    Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
 
+  // Relationships
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  topic  Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  // Constraints
   @@unique([courseId, topicId])
 }
 
 model Chapter {
-  id         String   @id @default(uuid()) @db.Uuid
-  courseId   String   @db.Uuid
+  id         String  @id @default(uuid()) @db.Uuid
+  courseId   String  @db.Uuid
   title      String
   slug       String
   orderIndex Int
-  isOptional Boolean  @default(false)
-  course     Course   @relation(fields: [courseId], references: [id])
-  lessons    Lesson[]
+  isOptional Boolean @default(false)
 
+  // Relationships
+  course  Course   @relation(fields: [courseId], references: [id])
+  lessons Lesson[]
+
+  // Constraints
   @@unique([courseId, slug])
 }
 
@@ -84,66 +98,85 @@ model Lesson {
   title      String
   orderIndex Int
   isOptional Boolean @default(false)
-  cards      Card[]
-  chapter    Chapter @relation(fields: [chapterId], references: [id])
+
+  // Relationships
+  chapter Chapter @relation(fields: [chapterId], references: [id])
+  cards   Card[]
+
+  // Constraints
+  @@index([chapterId])
 }
 
 model Card {
-  id                String              @id @default(uuid()) @db.Uuid
-  lessonId          String              @db.Uuid
-  term              String
-  translation       String
-  wordType          String
-  hintForms         String?
-  hintExample       String?
-  orderIndex        Int                 @default(0)
-  lesson            Lesson              @relation(fields: [lessonId], references: [id])
-  hints             CardHint[]
-  CardProgress      CardProgress[]
-  ReviewSessionCard ReviewSessionCard[]
+  id          String  @id @default(uuid()) @db.Uuid
+  lessonId    String  @db.Uuid
+  term        String
+  translation String
+  wordType    String
+  hintForms   String?
+  hintExample String?
+  orderIndex  Int     @default(0)
+
+  // Relationships
+  lesson         Lesson              @relation(fields: [lessonId], references: [id])
+  hints          CardHint[]
+  cardProgress   CardProgress[]
+  reviewSessions ReviewSessionCard[]
 }
 
 model CardHint {
   id     String @id @default(uuid()) @db.Uuid
   cardId String @db.Uuid
-  card   Card   @relation(fields: [cardId], references: [id])
-}
 
-model CardProgress {
-  id             String             @id @default(uuid()) @db.Uuid
-  userId         String             // Clerk user ID
-  cardId         String             @db.Uuid
-  status         CardProgressStatus
-  timesSeen      Int                @default(0)
-  lastReviewedAt DateTime?
-
-  user User @relation(fields: [userId], references: [id])
+  // Relationships
   card Card @relation(fields: [cardId], references: [id])
 }
 
+model CardProgress {
+  id             String    @id @default(uuid()) @db.Uuid
+  userId         String
+  cardId         String    @db.Uuid
+  timesSeen      Int       @default(0)
+  lastReviewedAt DateTime?
+
+  // Relationships
+  user   User               @relation(fields: [userId], references: [id])
+  card   Card               @relation(fields: [cardId], references: [id])
+  status CardProgressStatus
+}
+
 model Enrollment {
-  id          String   @id @default(uuid()) @db.Uuid
-  userId      String   // Clerk user ID
-  courseId    String   @db.Uuid
-  entrolledAt DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id])
-  course      Course   @relation(fields: [courseId], references: [id])
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String
+  courseId   String   @db.Uuid
+  enrolledAt DateTime @default(now())
+
+  // Relationships
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  // Constraints
+  @@unique([userId, courseId])
 }
 
 model ReviewSession {
-  id        String              @id @default(uuid()) @db.Uuid
-  student   User                @relation(fields: [studentId], references: [id])
-  studentId String              // Clerk user ID
-  createdAt DateTime            @default(now())
-  cards     ReviewSessionCard[]
+  id        String   @id @default(uuid()) @db.Uuid
+  studentId String
+  createdAt DateTime @default(now())
+
+  // Relationships
+  student User                @relation(fields: [studentId], references: [id])
+  cards   ReviewSessionCard[]
 }
 
 model ReviewSessionCard {
-  id        String        @id @default(uuid()) @db.Uuid
-  sessionId String        @db.Uuid
-  cardId    String        @db.Uuid
+  id        String   @id @default(uuid()) @db.Uuid
+  sessionId String   @db.Uuid
+  cardId    String   @db.Uuid
   correct   Boolean
   seenAt    DateTime
-  session   ReviewSession @relation(fields: [sessionId], references: [id])
-  card      Card          @relation(fields: [cardId], references: [id])
+
+  // Relationships
+  session ReviewSession @relation(fields: [sessionId], references: [id])
+  card    Card          @relation(fields: [cardId], references: [id])
 }

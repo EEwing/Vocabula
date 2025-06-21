@@ -2,7 +2,13 @@
 
 import React, { createContext, useContext, useMemo } from 'react'
 
-const PermissionsContext = createContext(null)
+interface PermissionsObject {
+  isOwner: boolean,
+  isEnrolled: boolean,
+  isHidden: boolean
+}
+
+const PermissionsContext = createContext<PermissionsObject | null>(null)
 
 /**
  * PermissionsProvider wraps children and provides permission info for a given object.

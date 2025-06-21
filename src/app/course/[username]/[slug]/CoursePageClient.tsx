@@ -7,8 +7,10 @@ import { Button } from '@/components/ui/button'
 import ChapterFormModal from '@/components/ChapterFormModal'
 import Link from 'next/link'
 import { usePermissions } from '@/contexts/PermissionsContext'
+import { useCourse } from '@/contexts/CourseContext'
 
-export default function CoursePageClient({ course }) {
+export default function CoursePageClient() {
+  const {course} = useCourse();
   const [modalOpen, setModalOpen] = useState(false)
   const { isOwner } = usePermissions()
 
@@ -25,7 +27,7 @@ export default function CoursePageClient({ course }) {
           </p>
           {course.topics.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-4">
-              {course.topics.map(({ topic }) => (
+              {course.topics.map(({topic}) => (
                 <span
                   key={topic.id}
                   className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm"
@@ -104,6 +106,11 @@ export default function CoursePageClient({ course }) {
                               <span className="font-medium">
                                 {lesson.title}
                               </span>
+                              {typeof lesson._count?.cards === 'number' && (
+                                <span className="ml-2 text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full">
+                                  {lesson._count.cards} card{lesson._count.cards !== 1 ? 's' : ''}
+                                </span>
+                              )}
                               {lesson.isOptional && (
                                 <span className="text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded">
                                   Optional
