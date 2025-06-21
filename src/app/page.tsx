@@ -5,9 +5,9 @@ import { SignedIn, SignedOut } from "@clerk/nextjs"
 import { prisma } from "./lib/prisma"
 
 export default async function Home() {
-  const { userId } = await auth()
+  const { isAuthenticated, userId } = await auth()
 
-  const allCourses = await prisma.course.findMany({
+  const allCourses = isAuthenticated ? await prisma.course.findMany({
     where: {
       OR: [
         { ownerId: userId },
@@ -24,7 +24,7 @@ export default async function Home() {
         where: { userId: userId }
       }
     }
-  })
+  }) : []
 
   const myCourses = allCourses.filter(c => c.ownerId === userId)
   const enrolledCourses = allCourses.filter(c => c.enrollments.some(e => e.userId === userId))
