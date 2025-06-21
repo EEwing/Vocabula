@@ -3,10 +3,12 @@ import { Input } from "@/components/ui/input"
 import { useLesson, useCard } from "@/contexts/LessonContext"
 import { Button } from "@/components/ui/button"
 import { deleteCards, saveCardsForLesson } from "@/app/lib/database"
+import { usePermissions } from "@/contexts/PermissionsContext"
 
 export function CardField({cardId, field, idx}) {
     const {updateCard, cards, addCard} = useLesson()
     const card = useCard(cardId)
+    const {isOwner} = usePermissions();
 
     const updateField = (value) => {
         if(field === "term")
@@ -25,21 +27,25 @@ export function CardField({cardId, field, idx}) {
         }
     }
 
-    return <Input
-        data-row={idx}
-        data-col={field}
-        value={field === "term" ? card?.term : card?.translation}
-        onChange={e => updateField((e.target as HTMLInputElement).value)}
-        onKeyDown={e => handleKeyDown(e, idx)}
-        placeholder="Enter term"
-        className="w-full"
-        type="text"
-    />
+    if (isOwner) {
+        return <Input
+            data-row={idx}
+            data-col={field}
+            value={field === "term" ? card?.term : card?.translation}
+            onChange={e => updateField((e.target as HTMLInputElement).value)}
+            onKeyDown={e => handleKeyDown(e, idx)}
+            placeholder="Enter term"
+            className="w-full border-none rounded-none"
+            type="text"
+        />
+    } else {
+        return <p>{field === "term" ? card?.term : card?.translation}</p>
+    }
 }
 
 export function AddCardButton() {
   const { addCard } = useLesson()
-  return <Button className="w-full mt-2" type="button" onClick={addCard}>+ Add Card</Button>
+  return <Button variant="secondary" className="w-full mt-2" type="button" onClick={addCard}>+ Add Card</Button>
 } 
 
 export function SaveCardsButton() {
@@ -59,7 +65,7 @@ export function SaveCardsButton() {
 
 export function RemoveCardButton({cardId, children}) {
   const { removeCard } = useLesson()
-  return <Button className="w-full mt-2" type="button" onClick={() => removeCard(cardId)}>
+  return <Button variant="destructive" type="button" onClick={() => removeCard(cardId)}>
     {children}
   </Button>
 }

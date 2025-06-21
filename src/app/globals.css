@@ -47,71 +47,72 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #f9f5e7;
-  --foreground: #162a26;
-  --card: white;
-  --card-foreground: #162a26;
-  --popover: #f9f5e7;
-  --popover-foreground: #162a26;
-  --primary: #d06b45; /* Accent #2 */
-  --primary-foreground: #f9f5e7;
-  --secondary: #3499c8; /* Accent #1 (optional, for secondary) */
-  --secondary-foreground: #162a26;
-  --muted: #f9f5e7;
-  --muted-foreground: #3499c8;
-  --accent: #3499c8; /* Accent #1 */
-  --accent-foreground: #162a26;
-  --destructive: #d06b45;
-  --border: #3499c8;
-  --input: #3499c8;
-  --ring: #3499c8;
-  --chart-1: #3499c8;
-  --chart-2: #d06b45;
-  --chart-3: #3499c8;
-  --chart-4: #d06b45;
-  --chart-5: #3499c8;
-  --sidebar: #f9f5e7;
-  --sidebar-foreground: #162a26;
-  --sidebar-primary: #d06b45;
-  --sidebar-primary-foreground: #f9f5e7;
-  --sidebar-accent: #3499c8;
-  --sidebar-accent-foreground: #162a26;
-  --sidebar-border: #3499c8;
-  --sidebar-ring: #3499c8;
+  --background: #F1ECE5; /* Warmer, more saturated beige */
+  --foreground: #1F1F1F; /* Slightly deeper black for readability */
+  --card: #FFFFFF; /* Full white for sharper contrast */
+  --card-foreground: #1F1F1F; /* Match text primary */
+  --popover: #FFFFFF; /* Match card for popover */
+  --popover-foreground: #1F1F1F; /* Match text primary */
+  --primary: #2A9D8F; /* Forest Green */
+  --primary-foreground: #F1ECE5; /* Background for contrast */
+  --secondary: #E9C46A; /* Warm Ochre */
+  --secondary-foreground: #1F1F1F; /* Match text primary */
+  --muted: #F1ECE5; /* Background for muted */
+  --muted-foreground: #857E79; /* Soft brown-gray, warmer than neutral grays */
+  --accent: #2A9D8F; /* Forest Green (use primary as accent) */
+  --accent-foreground: #F1ECE5; /* Background for contrast */
+  --destructive: #9B2915; /* Deep Clay (Error) */
+  --destructive-foreground: green; /* Deep Clay (Error) */
+  --border: #C8BEB4; /* Visible on off-white, still subtle */
+  --input: #2A9D8F; /* Forest Green (input border) */
+  --ring: #2A9D8F; /* Forest Green (focus ring) */
+  --chart-1: #2A9D8F; /* Forest Green */
+  --chart-2: #E9C46A; /* Warm Ochre */
+  --chart-3: #70A37F; /* Soft Green (Success) */
+  --chart-4: #E07A5F; /* Terracotta (Warning) */
+  --chart-5: #9B2915; /* Deep Clay (Error) */
+  --sidebar: #F1ECE5; /* Match background */
+  --sidebar-foreground: #1F1F1F; /* Match text primary */
+  --sidebar-primary: #2A9D8F; /* Forest Green */
+  --sidebar-primary-foreground: #F1ECE5; /* Background for contrast */
+  --sidebar-accent: #E9C46A; /* Warm Ochre */
+  --sidebar-accent-foreground: #1F1F1F; /* Match text primary */
+  --sidebar-border: #2A9D8F; /* Forest Green */
+  --sidebar-ring: #2A9D8F; /* Forest Green */
 }
 
 .dark {
-  --background: #282728;
-  --foreground: #c7cacc;
-  --card: #162a26;
-  --card-foreground: #f9f5e7;
-  --popover: #162a26;
-  --popover-foreground: #f9f5e7;
-  --primary: #d06b45; /* Accent #2 */
-  --primary-foreground: #162a26;
-  --secondary: #3499c8; /* Accent #1 (optional, for secondary) */
-  --secondary-foreground: #f9f5e7;
-  --muted: #162a26;
-  --muted-foreground: #3499c8;
-  --accent: #3499c8; /* Accent #1 */
-  --accent-foreground: #f9f5e7;
-  --destructive: #d06b45;
-  --border: #3499c8;
-  --input: #3499c8;
-  --ring: #3499c8;
-  --chart-1: #3499c8;
-  --chart-2: #d06b45;
-  --chart-3: #3499c8;
-  --chart-4: #d06b45;
-  --chart-5: #3499c8;
-  --sidebar: #162a26;
-  --sidebar-foreground: #f9f5e7;
-  --sidebar-primary: #d06b45;
-  --sidebar-primary-foreground: #162a26;
-  --sidebar-accent: #3499c8;
-  --sidebar-accent-foreground: #f9f5e7;
-  --sidebar-border: #3499c8;
-  --sidebar-ring: #3499c8;
+  --background: #1E1B16; /* Dark earthy brown-black */
+  --foreground: #F5F3ED; /* Warm cream white (Primary Text) */
+  --card: #2B2722; /* Slightly raised tone for card/surface */
+  --card-foreground: #F5F3ED; /* Warm cream white */
+  --popover: #2B2722; /* Match card for popover */
+  --popover-foreground: #F5F3ED; /* Warm cream white */
+  --primary: #81B29A; /* Softer green */
+  --primary-foreground: #1E1B16; /* Background for contrast */
+  --secondary: #D9A94E; /* Dimmed ochre */
+  --secondary-foreground: #1E1B16; /* Background for contrast */
+  --muted: #1E1B16; /* Background for muted */
+  --muted-foreground: #B9B2A9; /* Muted sepia (Muted Text) */
+  --accent: #81B29A; /* Use primary as accent */
+  --accent-foreground: #1E1B16; /* Background for contrast */
+  --destructive: #E76F51; /* Warm clay red (Error) */
+  --border: #3B362F; /* Brown-gray divider */
+  --input: #3B362F; /* Match border for input */
+  --ring: #81B29A; /* Use primary for focus ring */
+  --chart-1: #81B29A; /* Softer green */
+  --chart-2: #D9A94E; /* Dimmed ochre */
+  --chart-3: #A8C99A; /* Muted green (Success) */
+  --chart-4: #F4A261; /* Orange (Warning) */
+  --chart-5: #E76F51; /* Warm clay red (Error) */
+  --sidebar: #1E1B16; /* Match background */
+  --sidebar-foreground: #F5F3ED; /* Warm cream white */
+  --sidebar-primary: #81B29A; /* Softer green */
+  --sidebar-primary-foreground: #1E1B16; /* Background for contrast */
+  --sidebar-accent: #D9A94E; /* Dimmed ochre */
+  --sidebar-accent-foreground: #1E1B16; /* Background for contrast */
+  --sidebar-border: #3B362F; /* Brown-gray divider */
+  --sidebar-ring: #81B29A; /* Softer green */
 }
 
 @layer base {

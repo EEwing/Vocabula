@@ -6,6 +6,7 @@ import { ChapterProvider } from '@/contexts/ChapterContext'
 import { PermissionsProvider, usePermissions } from '@/contexts/PermissionsContext'
 import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/app/lib/prisma'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default async function ChapterPage({ params }) {
   const { username, slug: courseSlug, chapter: chapterSlug } = await params
@@ -51,25 +52,29 @@ export default async function ChapterPage({ params }) {
           <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-4">{pageData.chapters[0].title}</h1>
             {pageData.chapters[0].lessons.length === 0 ? (
-              <div className="text-gray-500">No lessons in this chapter yet.</div>
+              <Card className="text-muted-foreground">No lessons in this chapter yet.</Card>
             ) : (
-              <ul className="space-y-2">
+              <div className="space-y-2">
                 {pageData.chapters[0].lessons.map(lesson => (
-                  <li key={lesson.id} className="p-3 my-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                    <Link href={`/course/${username}/${courseSlug}/${chapterSlug}/${lesson.id}`} className="font-medium text-blue-600 hover:underline dark:text-blue-400">
-                      {lesson.title}
-                    </Link>
-                    {typeof lesson._count?.cards === 'number' && (
-                      <span className="ml-2 text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full">
-                        {lesson._count.cards} card{lesson._count.cards !== 1 ? 's' : ''}
-                      </span>
-                    )}
-                    {lesson.isOptional && (
-                      <span className="ml-2 text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded">Optional</span>
-                    )}
-                  </li>
+                  <Card key={lesson.id}>
+                    <CardHeader>
+                      <CardContent>
+                        <Link href={`/course/${username}/${courseSlug}/${chapterSlug}/${lesson.id}`} className="hover:underline text-blue-600">
+                          {lesson.title}
+                        </Link>
+                        {lesson._count.cards > 0 && (
+                          <span className="ml-2 text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
+                            {lesson._count.cards} card{lesson._count.cards !== 1 ? 's' : ''}
+                          </span>
+                        )}
+                        {lesson.isOptional && (
+                          <span className="ml-2 text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">Optional</span>
+                        )}
+                      </CardContent>
+                    </CardHeader>
+                  </Card>
                 ))}
-              </ul>
+              </div>
             )}
             <LessonManager chapterId={pageData.chapters[0].id} chapterSlug={pageData.chapters[0].slug} />
           </div>

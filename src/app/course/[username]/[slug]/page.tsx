@@ -15,7 +15,15 @@ export default async function CoursePage({ params }) {
     include: {
       chapters: {
         include: {
-          lessons: true
+          lessons: {
+            include: {
+              _count: {
+                select: {
+                  cards: true
+                }
+              }
+            }
+          }
         }
       },
       enrollments: true,

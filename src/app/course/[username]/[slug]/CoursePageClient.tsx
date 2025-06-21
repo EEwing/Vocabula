@@ -81,7 +81,7 @@ export default function CoursePageClient() {
                         {chapter.title}
                       </Link>
                       {chapter.isOptional && (
-                        <span className="text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded">
+                        <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
                           Optional
                         </span>
                       )}
@@ -97,22 +97,22 @@ export default function CoursePageClient() {
                         {chapter.lessons.map((lesson) => (
                           <div
                             key={lesson.id}
-                            className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                            className="flex items-center justify-between p-3 bg-background text-foreground rounded-lg"
                           >
                             <div className="flex items-center gap-3">
-                              <span className="text-sm text-gray-500 dark:text-gray-400">
+                              <span className="text-sm text-muted-foreground">
                                 {lesson.orderIndex}.
                               </span>
                               <span className="font-medium">
                                 {lesson.title}
                               </span>
-                              {typeof lesson._count?.cards === 'number' && (
-                                <span className="ml-2 text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full">
+                              {lesson._count.cards > 0 && (
+                                <span className="ml-2 text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
                                   {lesson._count.cards} card{lesson._count.cards !== 1 ? 's' : ''}
                                 </span>
                               )}
                               {lesson.isOptional && (
-                                <span className="text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded">
+                                <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
                                   Optional
                                 </span>
                               )}
