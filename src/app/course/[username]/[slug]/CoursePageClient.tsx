@@ -132,9 +132,12 @@ export default function CoursePageClient() {
                             <span className="text-sm text-muted-foreground">
                               {lesson.orderIndex}.
                             </span>
-                            <span className="font-medium">
+                            <Link
+                              href={`/course/${course.owner.username}/${course.slug}/${chapter.slug}/${lesson.id}`}
+                              className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+                            >
                               {lesson.title}
-                            </span>
+                            </Link>
                             {lesson._count.cards > 0 && (
                               <span className="ml-2 text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
                                 {lesson._count.cards} card{lesson._count.cards !== 1 ? 's' : ''}
