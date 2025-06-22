@@ -136,4 +136,30 @@ export async function saveCardsForLesson(lessonId, cardViews) {
     // Create new
   }
   return results
+}
+
+/**
+ * Enroll a user in a course.
+ * @param {string} userId
+ * @param {string} courseId
+ * @returns {Promise<Object>} The created enrollment
+ */
+export async function enrollInCourse(userId, courseId) {
+  if (!userId || !courseId) throw new Error('Missing userId or courseId')
+  return prisma.enrollment.create({
+    data: { userId, courseId },
+  })
+}
+
+/**
+ * Unenroll a user from a course.
+ * @param {string} userId
+ * @param {string} courseId
+ * @returns {Promise<Object>} The deleted enrollment
+ */
+export async function unenrollFromCourse(userId, courseId) {
+  if (!userId || !courseId) throw new Error('Missing userId or courseId')
+  return prisma.enrollment.delete({
+    where: { userId_courseId: { userId, courseId } },
+  })
 } 

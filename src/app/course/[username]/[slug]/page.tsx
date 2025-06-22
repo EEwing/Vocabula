@@ -45,9 +45,8 @@ export default async function CoursePage({ params }) {
       }
     }
   })
-  if (!pageData) {
-    notFound()
-  }
+
+  if (!pageData) notFound()
   const isOwner = pageData.ownerId === userId
   const isEnrolled = pageData.enrollments.some(e => e.userId === userId)
   return (

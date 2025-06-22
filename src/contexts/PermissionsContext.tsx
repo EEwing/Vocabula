@@ -1,11 +1,14 @@
 "use client"
 
-import React, { createContext, useContext, useMemo } from 'react'
+import React, { createContext, useContext, useMemo, useState } from 'react'
 
+type AtLeastRole = 'owner' | 'enrolled';
 interface PermissionsObject {
   isOwner: boolean,
   isEnrolled: boolean,
-  isHidden: boolean
+  isHidden: boolean,
+  setEnrolled: (enrolled: boolean) => void,
+  atLeast: (role: AtLeastRole) => boolean
 }
 
 const PermissionsContext = createContext<PermissionsObject | null>(null)
@@ -18,19 +21,25 @@ const PermissionsContext = createContext<PermissionsObject | null>(null)
  * @param {boolean} props.isEnrolled - Whether the user is enrolled (precomputed)
  * @param {React.ReactNode} props.children
  */
-export function PermissionsProvider({ isOwner, isEnrolled, children }) {
-  // isHidden: default to false, extend as needed
+export function PermissionsProvider({ isOwner, isEnrolled: initialEnrolled, children }) {
+  const [isEnrolled, setEnrolled] = useState(initialEnrolled);
+  const atLeast = (role: AtLeastRole) => {
+    if (role === 'owner') return isOwner;
+    if (role === 'enrolled') return isOwner || isEnrolled;
+    return false;
+  };
   const value = useMemo(() => ({
     isOwner,
-    isEnrolled: isEnrolled || isOwner,
-    isHidden: !(isOwner || isEnrolled)
-  }), [isOwner, isEnrolled])
-
+    isEnrolled,
+    isHidden: !(isOwner || isEnrolled),
+    setEnrolled,
+    atLeast,
+  }), [isOwner, isEnrolled]);
   return (
     <PermissionsContext.Provider value={value}>
       {children}
     </PermissionsContext.Provider>
-  )
+  );
 }
 
 /**

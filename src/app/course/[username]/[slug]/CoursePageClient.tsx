@@ -8,6 +8,33 @@ import ChapterFormModal from '@/components/ChapterFormModal'
 import Link from 'next/link'
 import { usePermissions } from '@/contexts/PermissionsContext'
 import { useCourse } from '@/contexts/CourseContext'
+import { enroll, unenroll } from '@/server/course'
+
+function EnrollButton() {
+  const { isEnrolled, isOwner, setEnrolled } = usePermissions();
+  const { course } = useCourse();
+  const [loading, setLoading] = useState(false);
+
+  const handleClick = async (e) => {
+    e.preventDefault()
+    setLoading(true);
+    if(isEnrolled) {
+      const enrollment = await unenroll(course.id) 
+      setEnrolled(enrollment === null);
+    } else {
+      const enrollment = await enroll(course.id)
+      setEnrolled(enrollment !== null)
+    }
+    setLoading(false);
+  };
+
+  if (isOwner) return null;
+  return (
+    <Button onClick={handleClick} disabled={loading} variant={isEnrolled ? 'secondary' : 'default'} className="ml-2">
+      {loading ? (isEnrolled ? 'Unenrolling...' : 'Enrolling...') : (isEnrolled ? 'Unenroll' : 'Enroll')}
+    </Button>
+  );
+}
 
 export default function CoursePageClient() {
   const {course} = useCourse();
@@ -46,18 +73,21 @@ export default function CoursePageClient() {
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
             Chapters
           </h2>
-          {isOwner && <>
-            <Button onClick={() => setModalOpen(true)}>
-              New Chapter
-            </Button>
-            <ChapterFormModal
-              open={modalOpen}
-              onOpenChange={setModalOpen}
-              courseSlug={course.slug}
-              courseId={course.id}
-              onChapterCreated={() => window.location.reload()}
-            />
-          </>}
+          <div className="flex items-center">
+            {isOwner && <>
+              <Button onClick={() => setModalOpen(true)}>
+                New Chapter
+              </Button>
+              <ChapterFormModal
+                open={modalOpen}
+                onOpenChange={setModalOpen}
+                courseSlug={course.slug}
+                courseId={course.id}
+                onChapterCreated={() => window.location.reload()}
+              />
+            </>}
+            <EnrollButton />
+          </div>
         </div>
         {course.chapters.length === 0 ? (
           <Card>
