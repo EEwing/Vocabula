@@ -117,16 +117,19 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--border);
+    outline-color: hsl(var(--ring) / 0.5);
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--background);
+    color: var(--foreground);
   }
 }
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@plugin "@tailwindcss/typography";
 
 @layer base {
   :root {
@@ -174,6 +177,104 @@
     --ring: 240 4.9% 83.9%;
   }
 }
+
+/* Start Generation Here */
+@layer components {
+  /* .prose h1 {
+    @apply text-3xl font-bold mb-4 mt-6;
+  }
+  
+  .prose h2 {
+    @apply text-2xl font-semibold mb-3 mt-5;
+  }
+  
+  .prose h3 {
+    @apply text-xl font-semibold mb-2 mt-4;
+  }
+  
+  .prose h4 {
+    @apply text-lg font-medium mb-2 mt-3;
+  }
+  
+  .prose h5 {
+    @apply text-base font-medium mb-1 mt-2;
+  }
+  
+  .prose h6 {
+    @apply text-sm font-medium mb-1 mt-2;
+  }
+  
+  .prose p {
+    @apply mb-3;
+    line-height: inherit;
+  }
+  
+  .prose a {
+    @apply underline transition-colors;
+  }
+  
+  .prose ul {
+    @apply list-disc list-inside mb-3;
+  }
+  
+  .prose ol {
+    @apply list-decimal list-inside mb-3;
+  }
+  
+  .prose li {
+    @apply mb-1;
+  }
+
+  .prose mark {
+    padding: 0 0.125rem;
+    border-radius: 0.5rem;
+  }
+  
+  .prose blockquote {
+    border-left-width: 4px;
+    border-color: #d1d5db;
+    padding-left: 1rem;
+    font-style: italic;
+    color: var(--muted-foreground);
+    margin-bottom: 0.75rem;
+  }
+  
+  .prose code {
+    background-color: var(--muted);
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    padding-top: 0.125rem;
+    padding-bottom: 0.125rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-family: var(--font-mono, monospace);
+    color: var(--foreground);
+  }
+  
+  .prose pre {
+    background-color: var(--muted);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    overflow-x: auto;
+  }
+  
+  .prose pre code {
+    background-color: transparent;
+    padding: 0;
+  }
+  
+  .prose strong {
+    font-weight: bold;
+    color: var(--foreground);
+  }
+  
+  .prose em {
+    font-style: italic;
+    color: var(--foreground);
+  } */
+}
+/* End Generation Here */
 
 @layer base {
   * {

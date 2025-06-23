@@ -8,6 +8,7 @@ import Flashcard from './Flashcard'
 import { prisma } from '@/app/lib/prisma'
 import { PermissionsProvider } from '@/contexts/PermissionsContext'
 import { auth } from '@clerk/nextjs/server'
+import LessonDescription from './LessonDescription'
 
 export default async function LessonPage({ params }) {
   const { username, slug: courseSlug, chapter: chapterSlug, lesson: lessonId } = await params
@@ -51,6 +52,7 @@ export default async function LessonPage({ params }) {
               {isOwner && <AddCardButton/>}
               {isOwner && <SaveCardsButton/>}
             </div>
+            <LessonDescription description={pageData.chapters[0].lessons[0].description} lessonId={pageData.chapters[0].lessons[0].id} isOwner={isOwner} />
           </PermissionsProvider>
         </LessonProvider>
       </ChapterProvider>

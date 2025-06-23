@@ -67,6 +67,7 @@ model CourseTopic {
   id       String @id @default(uuid()) @db.Uuid
   courseId String @db.Uuid
   topicId  String @db.Uuid
+  description String?
 
   // Relationships
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -83,6 +84,7 @@ model Chapter {
   slug       String
   orderIndex Int
   isOptional Boolean @default(false)
+  description String?
 
   // Relationships
   course  Course   @relation(fields: [courseId], references: [id])
@@ -98,6 +100,7 @@ model Lesson {
   title      String
   orderIndex Int
   isOptional Boolean @default(false)
+  description String?
 
   // Relationships
   chapter Chapter @relation(fields: [chapterId], references: [id])

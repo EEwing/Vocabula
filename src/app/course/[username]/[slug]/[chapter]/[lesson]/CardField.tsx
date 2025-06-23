@@ -4,6 +4,7 @@ import { useLesson, useCard } from "@/contexts/LessonContext"
 import { Button } from "@/components/ui/button"
 import { deleteCards, saveCardsForLesson } from "@/app/lib/database"
 import { usePermissions } from "@/contexts/PermissionsContext"
+import { Textarea } from "@/components/ui/textarea"
 
 export function CardField({cardId, field, idx}) {
     const {updateCard, cards, addCard} = useLesson()
@@ -28,15 +29,14 @@ export function CardField({cardId, field, idx}) {
     }
 
     if (isOwner) {
-        return <Input
+        return <Textarea
             data-row={idx}
             data-col={field}
             value={field === "term" ? card?.term : card?.translation}
-            onChange={e => updateField((e.target as HTMLInputElement).value)}
+            onChange={e => updateField((e.target as HTMLTextAreaElement).value)}
             onKeyDown={e => handleKeyDown(e, idx)}
             placeholder="Enter term"
-            className="w-full border-none rounded-none"
-            type="text"
+            className="w-full border-none rounded-none resize-none"
         />
     } else {
         return <p>{field === "term" ? card?.term : card?.translation}</p>

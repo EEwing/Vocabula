@@ -27,3 +27,25 @@ export async function unenroll(courseId: string) {
         return null
     }
 }
+
+export async function updateLessonDescription(lessonId: string, description: string) {
+    const { userId } = await auth()
+    const lesson = await prisma.lesson.findUnique({
+        where: { id: lessonId },
+        include: { chapter: { include: { course: { select: { ownerId: true } } } } }
+    })
+    console.log(lesson)
+    if (lesson?.chapter.course.ownerId !== userId) {
+        console.error('Permission denied:', userId, lesson?.chapter.course.ownerId, lessonId)
+        return null
+    }
+    try {
+        return await prisma.lesson.update({
+            where: { id: lessonId },
+            data: { description: description }
+        })
+    } catch (error) {
+        console.error('Failed to update lesson description:', error, userId, lessonId)
+        return null
+    }
+}
