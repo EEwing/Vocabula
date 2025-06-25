@@ -14,8 +14,12 @@ export function LessonProvider({ children, lesson }) {
   // Add more actions as needed
   const addCard = () => setCards(prev => [...prev, emptyCard(lesson.id, cards.length)])
   const updateCard = (cardId, term, translation) => setCards(cards.map(c => (cardId === c.id) ? {...c, term: term, translation: translation} : c))
-  const removeCard = (cardId) => {
-    setCards([...cards.filter(c => c.id !== cardId)])
+  const removeCard = (cardView) => {
+    // First remove the card from the main list
+    setCards([...cards.filter(c => c.id !== cardView.id)])
+
+    //Then mark the card for delete if it isn't new
+    if(cardView.isNew) return;
     setDeletedCards([...deletedCards, cardId])
   }
 

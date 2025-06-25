@@ -34,7 +34,7 @@ export default function CardTable() {
                 </TableCell>
                 { isOwner && 
                 <TableCell className="px-2 py-2 text-center w-auto">
-                  <RemoveCardButton cardId={card.id}>X</RemoveCardButton>
+                  <RemoveCardButton cardView={card}>X</RemoveCardButton>
                 </TableCell>}
               </TableRow>
             ))}
