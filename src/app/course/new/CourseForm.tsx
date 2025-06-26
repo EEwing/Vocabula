@@ -55,7 +55,7 @@ export default function CourseForm({ topics, createCourse, baseUrl }) {
           type="text"
           className="w-full border rounded px-3 py-2"
           value={name}
-          onChange={e => setName(e.target.value)}
+          onInput={e => setName((e.target as HTMLInputElement).value)}
           required
         />
       </div>
@@ -74,7 +74,7 @@ export default function CourseForm({ topics, createCourse, baseUrl }) {
           multiple
           className="w-full border rounded px-3 py-2 h-32"
           value={selectedTopics}
-          onChange={e => setSelectedTopics(Array.from(e.target.selectedOptions, o => o.value))}
+          onInput={e => setSelectedTopics(Array.from((e.target as HTMLSelectElement).selectedOptions, o => o.value))}
         >
           {topics.map(topic => (
             <option key={topic.id} value={topic.id}>{topic.name}</option>

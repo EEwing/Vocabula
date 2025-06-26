@@ -63,7 +63,7 @@ export default function LessonFormModal({ open, onOpenChange, chapterId, onLesso
             <Input
               id="lesson-name"
               value={name}
-              onChange={e => setName((e.target as HTMLInputElement).value)}
+              onInput={e => setName((e.target as HTMLInputElement).value)}
               required
               placeholder="Enter lesson name"
               autoFocus

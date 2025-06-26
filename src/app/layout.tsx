@@ -5,7 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs"
 import ClientSidebarDropdown from "@/components/ClientSidebarDropdown"
 import { Card } from "@/components/ui/card"
 import SidebarNav from "@/components/SidebarNav"
-import { auth, clerkClient } from "@clerk/nextjs/server"
+import { auth, clerkClient, User } from "@clerk/nextjs/server"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,7 +24,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   const { userId } = await auth();
-  let user = null;
+  let user:User | null = null;
   if (userId) {
     const clerk = await clerkClient();
     user = await clerk.users.getUser(userId);

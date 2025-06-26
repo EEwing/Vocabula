@@ -35,7 +35,7 @@ export default function TopicManager({ initialTopics, createTopic }) {
           className="border rounded px-2 py-1 flex-1"
           placeholder="Enter new topic name"
           value={input}
-          onChange={e => setInput(e.target.value)}
+          onInput={e => setInput((e.target as HTMLInputElement).value)}
           disabled={loading}
         />
         <button type="submit" className="btn btn-primary" disabled={loading || !input.trim()}>

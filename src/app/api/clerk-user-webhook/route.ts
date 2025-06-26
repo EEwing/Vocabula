@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { faker } from '@faker-js/faker';
-import { UserJSON } from "@clerk/nextjs/dist/types/server";
+import { UserJSON } from "@clerk/nextjs/server";
 
 const prisma = new PrismaClient();
 

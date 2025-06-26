@@ -24,11 +24,11 @@ export function EditableTextBox({value: initialValue, onChange, onCommit, canEdi
     const [success, setSuccess] = useState(false);
     const sanitizedDescription = useMemo(() => {
         return sanitizeUserInput(value || placeholder);
-    }, [value])
+    }, [value, placeholder])
 
     useEffect(() => {
         onChange && onChange(value);
-    }, [value])
+    }, [value, onChange])
 
     useEffect(() => {
         if(success) {

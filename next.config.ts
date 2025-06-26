@@ -1,6 +1,14 @@
 import {withSentryConfig} from '@sentry/nextjs';
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
+import { NextConfig } from 'next';
+
+const nextConfig: NextConfig = {
+    images: {
+        domains: ["img.clerk.com"],
+    },
+    experimental: {
+        ppr: true,
+    },
+};
 
 export default withSentryConfig(nextConfig, {
     // For all available options, see:

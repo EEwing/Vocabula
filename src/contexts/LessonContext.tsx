@@ -20,7 +20,7 @@ export function LessonProvider({ children, lesson }) {
 
     //Then mark the card for delete if it isn't new
     if(cardView.isNew) return;
-    setDeletedCards([...deletedCards, cardId])
+    setDeletedCards([...deletedCards, cardView.id])
   }
 
   const value = {

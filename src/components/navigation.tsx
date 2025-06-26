@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { SignInButton, SignUpButton, SignedIn, SignedOut, SignOutButton } from "@clerk/nextjs"
+import Image from "next/image"
 
 export function Navigation() {
   return (
@@ -10,7 +11,7 @@ export function Navigation() {
       <div className="flex h-14 items-center px-4 md:px-6">
         <div className="mr-8 flex">
           <Link href="/" className="flex items-center space-x-2">
-            <img src="/vocabula.png" alt="Vocabula Logo" className="h-full w-auto max-h-14 rounded-lg object-contain" />
+            <Image src="/vocabula.png" alt="Vocabula Logo" className="h-full w-auto max-h-14 rounded-lg object-contain" width={56} height={56}/>
             <span className="hidden font-bold sm:inline-block">
               Vocabula
             </span>

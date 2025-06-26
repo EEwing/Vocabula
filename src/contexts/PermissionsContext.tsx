@@ -23,18 +23,17 @@ const PermissionsContext = createContext<PermissionsObject | null>(null)
  */
 export function PermissionsProvider({ isOwner, isEnrolled: initialEnrolled, children }) {
   const [isEnrolled, setEnrolled] = useState(initialEnrolled);
-  const atLeast = (role: AtLeastRole) => {
-    if (role === 'owner') return isOwner;
-    if (role === 'enrolled') return isOwner || isEnrolled;
-    return false;
-  };
   const value = useMemo(() => ({
     isOwner,
     isEnrolled,
     isHidden: !(isOwner || isEnrolled),
     setEnrolled,
-    atLeast,
-  }), [isOwner, isEnrolled]);
+    atLeast: (role: AtLeastRole) => {
+      if (role === 'owner') return isOwner;
+      if (role === 'enrolled') return isOwner || isEnrolled;
+      return false;
+    }
+  }), [isOwner, isEnrolled, setEnrolled]);
   return (
     <PermissionsContext.Provider value={value}>
       {children}
