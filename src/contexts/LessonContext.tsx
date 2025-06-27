@@ -5,7 +5,6 @@ import { CardView, dbCard, emptyCard } from '@/app/lib/cardutils'
 import { Prisma } from '@prisma/client';
 
 export type LessonWithCards = Prisma.LessonGetPayload<{ include: { cards: true } }>;
-type Card = Prisma.CardGetPayload<{}>;
 
 type LessonContextValue = {
   lesson: LessonWithCards;
@@ -14,7 +13,7 @@ type LessonContextValue = {
   setCards: React.Dispatch<React.SetStateAction<CardView[]>>;
   addCard: () => void;
   updateCard: (cardId: string, term: string, translation: string) => void;
-  removeCard: (cardView: any) => void;
+  removeCard: (cardView: CardView) => void;
 };
 
 const LessonContext = createContext<LessonContextValue | null>(null)
@@ -26,15 +25,15 @@ interface LessonProviderProps {
 
 export function LessonProvider({ children, lesson }: LessonProviderProps) {
   // Initialize cards state from lesson.cards
-  const [cards, setCards] = useState((lesson.cards || []).map((c: any) => dbCard(c)));
+  const [cards, setCards] = useState((lesson.cards || []).map((c: Prisma.CardGetPayload<object>) => dbCard(c)));
   const [deletedCards, setDeletedCards] = useState<string[]>([]);
 
   // Add more actions as needed
-  const addCard = () => setCards((prev: any[]) => [...prev, emptyCard(lesson.id, cards.length)])
-  const updateCard = (cardId: string, term: string, translation: string) => setCards(cards.map((c: any) => (cardId === c.id) ? { ...c, term: term, translation: translation } : c))
-  const removeCard = (cardView: any) => {
+  const addCard = () => setCards((prev: CardView[]) => [...prev, emptyCard(lesson.id, cards.length)])
+  const updateCard = (cardId: string, term: string, translation: string) => setCards(cards.map((c: CardView) => (cardId === c.id) ? { ...c, term: term, translation: translation } : c))
+  const removeCard = (cardView: CardView) => {
     // First remove the card from the main list
-    setCards([...cards.filter((c: any) => c.id !== cardView.id)])
+    setCards([...cards.filter((c: CardView) => c.id !== cardView.id)])
 
     //Then mark the card for delete if it isn't new
     if (cardView.isNew) return;

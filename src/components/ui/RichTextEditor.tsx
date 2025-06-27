@@ -67,11 +67,9 @@ export default function RichTextEditor({ value, onChange: onValueChange, editabl
       },
     },
     onUpdate: ({ editor }) => {
-      onValueChange && onValueChange(editor.getHTML());
+      onValueChange?.(editor.getHTML());
     },
   });
-
-    const bubbleMenuIconClasses = "py-1 px-3 rounded-md border border-0.5 border-border min-w-3 min-h-3";
 
   return <>
     {/* <div className={`absolute z-50 -translate-y-full mb-2 flex flex-wrap gap-2 bg-card rounded-lg p-2 border border-border ${focused ? "" : "hidden"}`} role="tooltip">

@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { CardField, RemoveCardButton } from './CardField'
 import { useLesson } from "@/contexts/LessonContext"
 import { usePermissions } from '@/contexts/PermissionsContext'

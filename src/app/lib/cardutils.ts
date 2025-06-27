@@ -10,7 +10,7 @@ export type CardView = {
   isNew: boolean;
 }
 
-export function dbCard(card: Prisma.CardGetPayload<{}>): CardView {
+export function dbCard(card: Prisma.CardGetPayload<object>): CardView {
   return {
     id: card.id,
     term: card.term,

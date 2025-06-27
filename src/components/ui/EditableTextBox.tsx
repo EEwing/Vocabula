@@ -27,7 +27,7 @@ export function EditableTextBox({value: initialValue, onChange, onCommit, canEdi
     }, [value, placeholder])
 
     useEffect(() => {
-        onChange && onChange(value);
+        onChange?.(value);
     }, [value, onChange])
 
     useEffect(() => {

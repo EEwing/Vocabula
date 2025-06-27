@@ -34,7 +34,10 @@ export default async function LessonPage({ params }: { params: Promise<LessonPar
           lessons: {
             where: { id: lessonId },
             include: {
-              cards: true
+              cards: true,
+              _count: {
+                select: { cards: true }
+              }
             }
           }
         }

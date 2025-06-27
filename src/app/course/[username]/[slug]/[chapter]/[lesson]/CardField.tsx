@@ -1,5 +1,4 @@
 "use client"
-import { Input } from "@/components/ui/input"
 import { useLesson, useCard } from "@/contexts/LessonContext"
 import { Button } from "@/components/ui/button"
 import { deleteCards, saveCardsForLesson } from "@/app/lib/database"
@@ -61,7 +60,7 @@ export function SaveCardsButton() {
     const { lesson, cards, setCards, deletedCards } = useLesson()
     const saveCards = () => {
         const doSave = async () => {
-            const [_, savedCards] = await Promise.all([
+            const [, savedCards] = await Promise.all([
                 deleteCards(deletedCards),
                 saveCardsForLesson(lesson.id, cards)
             ])

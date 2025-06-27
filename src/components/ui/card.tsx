@@ -2,7 +2,7 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-export interface CardProps extends React.ButtonHTMLAttributes<HTMLDivElement> {}
+export type CardProps = React.ButtonHTMLAttributes<HTMLDivElement>
   
 function Card({
   className,
@@ -19,7 +19,7 @@ function Card({
   );
 }
 
-export interface CardHeaderProps extends React.ButtonHTMLAttributes<HTMLDivElement> {}
+export type CardHeaderProps = React.ButtonHTMLAttributes<HTMLDivElement>
 
 function CardHeader({
   className,
@@ -36,7 +36,7 @@ function CardHeader({
   );
 }
 
-export interface CardTitleProps extends React.ButtonHTMLAttributes<HTMLDivElement> {}
+export type CardTitleProps = React.ButtonHTMLAttributes<HTMLDivElement>
 
 function CardTitle({
   className,
@@ -50,7 +50,7 @@ function CardTitle({
   );
 }
 
-export interface CardDescriptionProps extends React.ButtonHTMLAttributes<HTMLDivElement> {}
+export type CardDescriptionProps = React.ButtonHTMLAttributes<HTMLDivElement>
 
 function CardDescription({
   className,
@@ -64,7 +64,7 @@ function CardDescription({
   );
 }
 
-export interface CardActionProps extends React.ButtonHTMLAttributes<HTMLDivElement> {}
+export type CardActionProps = React.ButtonHTMLAttributes<HTMLDivElement>
 
 function CardAction({
   className,
@@ -81,7 +81,7 @@ function CardAction({
   );
 }
 
-export interface CardContentProps extends React.ButtonHTMLAttributes<HTMLDivElement> {}
+export type CardContentProps = React.ButtonHTMLAttributes<HTMLDivElement>
 
 function CardContent({
   className,
@@ -90,7 +90,7 @@ function CardContent({
   return (<div data-slot="card-content" className={cn("px-6", className)} {...props} />);
 }
 
-export interface CardFooterProps extends React.ButtonHTMLAttributes<HTMLDivElement> {}
+export type CardFooterProps = React.ButtonHTMLAttributes<HTMLDivElement>
 
 function CardFooter({
   className,

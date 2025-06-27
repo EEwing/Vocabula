@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useMemo } from 'react'
 import { useAuth } from '@clerk/nextjs'
-import { Course, Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 
 export type CourseWithOwner = Prisma.CourseGetPayload<{ 
   include: { 

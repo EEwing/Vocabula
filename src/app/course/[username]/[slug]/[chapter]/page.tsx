@@ -3,10 +3,10 @@ import Link from 'next/link'
 import LessonManager from './LessonManager'
 import { CourseProvider } from '@/contexts/CourseContext'
 import { ChapterProvider } from '@/contexts/ChapterContext'
-import { PermissionsProvider, usePermissions } from '@/contexts/PermissionsContext'
+import { PermissionsProvider } from '@/contexts/PermissionsContext'
 import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/app/lib/prisma'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { CourseParams } from '../page'
 
 export type ChapterParams = CourseParams & {
@@ -34,11 +34,7 @@ export default async function ChapterPage({ params }: { params: Promise<ChapterP
         include: {
           lessons: {
             orderBy: { orderIndex: 'asc' },
-            select: {
-              id: true,
-              title: true,
-              orderIndex: true,
-              isOptional: true,
+            include: {
               _count: {
                 select: { cards: true }
               }

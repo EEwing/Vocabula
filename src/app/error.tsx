@@ -3,7 +3,7 @@
 import * as Sentry from '@sentry/nextjs';
 import { useEffect } from 'react';
 
-export default function ErrorBoundary({ error }: { error: any }) {
+export default function ErrorBoundary({ error }: { error: unknown }) {
   useEffect(() => {
     // Log the error to Sentry
     Sentry.captureException(error);

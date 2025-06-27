@@ -1,6 +1,6 @@
 import React from "react";
 
-export interface ProseProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type ProseProps = React.HTMLAttributes<HTMLDivElement>
 
 export function Prose({ className = "", ...rest }: ProseProps) {
   return (

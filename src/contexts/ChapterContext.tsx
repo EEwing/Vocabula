@@ -3,13 +3,13 @@
 import { Prisma } from '@prisma/client';
 import { createContext, useContext } from 'react'
 
-export type ChapterWithLessons = Prisma.ChapterGetPayload<{ include: { lessons: true } }>;
+export type ChapterWithLessons = Prisma.ChapterGetPayload<{ include: { lessons: { include: { _count: { select: { cards: true } } } } } }>;
 
 const ChapterContext = createContext<ChapterWithLessons | null>(null)
 
 type ChapterProviderProps = {
   children: React.ReactNode
-  chapter: any
+  chapter: ChapterWithLessons
 }
 
 export function ChapterProvider({ children, chapter }: ChapterProviderProps) {

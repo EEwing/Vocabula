@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       const { id, email_addresses, first_name, last_name, username } = evt.data;
       let uniqueUsername;
       let attempt = 0;
-      let maxAttempts = 10;
+      const maxAttempts = 10;
       let created = null;
       while (attempt < maxAttempts && !created) {
           uniqueUsername = getRandomReadableUsername(username, attempt);

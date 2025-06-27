@@ -1,6 +1,6 @@
 'use server'
 
-import { CardView, dbCard, emptyCard } from './cardutils'
+import { CardView, dbCard } from './cardutils'
 import { prisma } from './prisma'
 
 /**
