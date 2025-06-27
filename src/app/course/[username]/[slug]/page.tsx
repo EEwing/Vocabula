@@ -5,7 +5,12 @@ import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/app/lib/prisma'
 import { PermissionsProvider } from '@/contexts/PermissionsContext'
 
-export default async function CoursePage({ params }) {
+export type CourseParams = {
+  username: string
+  slug: string
+}
+
+export default async function CoursePage({ params }: { params: Promise<CourseParams> }) {
   const { username, slug } = await params
 
   const {userId} = await auth()
@@ -28,21 +33,11 @@ export default async function CoursePage({ params }) {
       },
       enrollments: true,
       topics: {
-        select: {
-          topic: {
-            select: {
-              id: true,
-              name: true
-            }
-          }
+        include: {
+          topic: true
         }
       },
-      owner: {
-        select: {
-          username: true,
-          name: true
-        }
-      }
+      owner: true
     }
   })
 

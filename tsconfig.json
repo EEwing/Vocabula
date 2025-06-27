@@ -1,27 +1,46 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    // Target modern JS
+    "target": "ES2020",
+    // Use latest ECMAScript features
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
-    "allowJs": true,
+    // Only allow TypeScript files (set to true if you still have JS files)
+    "allowJs": false,
+    // Skip type checking of declaration files for faster builds
     "skipLibCheck": true,
-    "strict": false,
+    // Enable all strict type-checking options
+    "strict": true,
+    // Do not emit output files (Next.js handles this)
     "noEmit": true,
+    // Enable incremental compilation for faster builds
     "incremental": true,
-    "module": "nodenext",
+    // Use modern module system for best compatibility
+    "module": "esnext",
+    // Use bundler-style module resolution (recommended for Next.js 14+)
+    "moduleResolution": "bundler",
+    // Allow default imports from modules with no default export
     "esModuleInterop": true,
-    "moduleResolution": "nodenext",
+    // Allow synthetic default imports (improves compatibility)
+    "allowSyntheticDefaultImports": true,
+    // Allow importing JSON files
     "resolveJsonModule": true,
+    // Required for Next.js and other tools that transpile files individually
     "isolatedModules": true,
+    // Required for Next.js
     "jsx": "preserve",
+    // Ensure consistent file name casing across OSes
+    "forceConsistentCasingInFileNames": true,
+    // Next.js plugin
     "plugins": [
       {
         "name": "next"
       }
     ],
+    // Path aliasing
     "paths": {
       "@/*": ["./src/*"]
     }

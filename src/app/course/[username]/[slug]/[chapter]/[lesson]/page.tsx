@@ -9,15 +9,25 @@ import { prisma } from '@/app/lib/prisma'
 import { PermissionsProvider } from '@/contexts/PermissionsContext'
 import { auth } from '@clerk/nextjs/server'
 import LessonDescription from './LessonDescription'
+import { ChapterParams } from '../page'
 
-export default async function LessonPage({ params }) {
+type LessonParams = ChapterParams & {
+  username: string;
+  slug: string;
+  chapter: string;
+  lesson: string;
+};
+
+export default async function LessonPage({ params }: { params: Promise<LessonParams> }) {
   const { username, slug: courseSlug, chapter: chapterSlug, lesson: lessonId } = await params
 
   const {userId} = await auth()
+  if(!userId) notFound()
 
   const pageData = await prisma.course.findFirst({
     where: { owner: {username: username}, slug: courseSlug },
     include: {
+      owner: true,
       chapters: {
         where: { slug: chapterSlug },
         include: {
@@ -31,6 +41,11 @@ export default async function LessonPage({ params }) {
       },
       enrollments: {
         where: { userId: userId }
+      },
+      topics: {
+        include: {
+          topic: true
+        }
       }
     }
   })

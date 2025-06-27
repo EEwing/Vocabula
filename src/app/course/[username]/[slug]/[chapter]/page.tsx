@@ -7,8 +7,13 @@ import { PermissionsProvider, usePermissions } from '@/contexts/PermissionsConte
 import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/app/lib/prisma'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CourseParams } from '../page'
 
-export default async function ChapterPage({ params }) {
+export type ChapterParams = CourseParams & {
+  chapter: string
+}
+
+export default async function ChapterPage({ params }: { params: Promise<ChapterParams> }) {
   const { username, slug: courseSlug, chapter: chapterSlug } = await params
 
   const {userId} = await auth()
@@ -17,9 +22,13 @@ export default async function ChapterPage({ params }) {
     where: { username: username },
     select: { id: true }
   })
+  
+  if (!courseOwner) notFound()
+  
   const pageData = await prisma.course.findUnique({
     where: { ownerId_slug: { ownerId: courseOwner.id, slug: courseSlug } },
     include: {
+      owner: true,
       chapters: {
         where: { slug: chapterSlug },
         include: {
@@ -37,9 +46,17 @@ export default async function ChapterPage({ params }) {
           }
         }
       },
-      enrollments: true
+      enrollments: true,
+      topics: {
+        include: {
+          topic: true
+        }
+      }
     }
   })
+  
+  if (!pageData) notFound()
+  
   const isOwner = pageData.ownerId === userId
   const isEnrolled = pageData.enrollments.some(e => e.userId === userId)
 
@@ -75,7 +92,7 @@ export default async function ChapterPage({ params }) {
                 ))}
               </div>
             )}
-            <LessonManager chapterId={pageData.chapters[0].id} chapterSlug={pageData.chapters[0].slug} />
+            <LessonManager chapterId={pageData.chapters[0].id} />
         </PermissionsProvider>
       </ChapterProvider>
     </CourseProvider>

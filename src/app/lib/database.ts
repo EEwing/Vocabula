@@ -1,6 +1,6 @@
 'use server'
 
-import { dbCard, emptyCard } from './cardutils'
+import { CardView, dbCard, emptyCard } from './cardutils'
 import { prisma } from './prisma'
 
 /**
@@ -12,7 +12,14 @@ import { prisma } from './prisma'
  * @param {string[]} params.topicIds
  * @returns {Promise<{course: Object, courseTopics: Object[]}>}
  */
-export async function createCourseWithTopics({ name, slug, ownerId, topicIds }) {
+type CreateCourseWithTopicsParams = {
+  name: string
+  slug: string
+  ownerId: string
+  topicIds: string[]
+}
+
+export async function createCourseWithTopics({ name, slug, ownerId, topicIds }: CreateCourseWithTopicsParams) {
   const course = await prisma.course.create({
     data: {
       title: name,
@@ -21,7 +28,7 @@ export async function createCourseWithTopics({ name, slug, ownerId, topicIds }) 
     },
   })
   const courseTopics = await Promise.all(
-    (topicIds || []).map(topicId =>
+    (topicIds || []).map((topicId: string) =>
       prisma.courseTopic.create({
         data: {
           courseId: course.id,
@@ -38,12 +45,20 @@ export async function createCourseWithTopics({ name, slug, ownerId, topicIds }) 
  * @param {string} name - The name of the topic
  * @returns {Promise<{id: string, name: string}>}
  */
-export async function createTopic(name) {
-  if (!name || typeof name !== 'string') throw new Error('Invalid topic name')
+export async function createTopic(name: string) {
+  if (!name) throw new Error('Invalid topic name')
   return prisma.topic.create({
     data: { name },
     select: { id: true, name: true },
   })
+}
+
+type CreateChapterParams = {
+  courseId: string
+  title: string
+  slug: string
+  isOptional?: boolean
+  orderIndex: number
 }
 
 /**
@@ -56,7 +71,7 @@ export async function createTopic(name) {
  * @param {number} params.orderIndex
  * @returns {Promise<Object>} The created chapter
  */
-export async function createChapter({ courseId, title, slug, isOptional = false, orderIndex }) {
+export async function createChapter({ courseId, title, slug, isOptional = false, orderIndex }: CreateChapterParams) {
   if (!courseId || !title || !slug || typeof orderIndex !== 'number') throw new Error('Missing required fields')
   return prisma.chapter.create({
     data: {
@@ -69,6 +84,13 @@ export async function createChapter({ courseId, title, slug, isOptional = false,
   })
 }
 
+type CreateLessonParams = {
+  chapterId: string
+  title: string
+  isOptional?: boolean
+  orderIndex: number
+}
+
 /**
  * Server action to create a new lesson for a chapter.
  * @param {Object} params
@@ -79,7 +101,7 @@ export async function createChapter({ courseId, title, slug, isOptional = false,
  * @param {number} params.orderIndex
  * @returns {Promise<Object>} The created lesson
  */
-export async function createLesson({ chapterId, title, isOptional = false, orderIndex }) {
+export async function createLesson({ chapterId, title, isOptional = false, orderIndex }: CreateLessonParams) {
   if (!chapterId || !title || typeof orderIndex !== 'number') throw new Error('Missing required fields')
   return prisma.lesson.create({
     data: {
@@ -91,7 +113,7 @@ export async function createLesson({ chapterId, title, isOptional = false, order
   })
 }
 
-export async function deleteCards(cardIds) {
+export async function deleteCards(cardIds: string[]) {
   return prisma.card.deleteMany({
     where: { id: { in: cardIds } },
   })
@@ -103,7 +125,7 @@ export async function deleteCards(cardIds) {
  * @param {Array<{id?: string, term: string, translation: string}>} cards
  * @returns {Promise<Array<Object>>}
  */
-export async function saveCardsForLesson(lessonId, cardViews) {
+export async function saveCardsForLesson(lessonId: string, cardViews: CardView[]) {
   if (!lessonId || !Array.isArray(cardViews)) throw new Error('Invalid input')
   const results = []
   for (const card of cardViews) {
@@ -137,29 +159,3 @@ export async function saveCardsForLesson(lessonId, cardViews) {
   }
   return results
 }
-
-/**
- * Enroll a user in a course.
- * @param {string} userId
- * @param {string} courseId
- * @returns {Promise<Object>} The created enrollment
- */
-export async function enrollInCourse(userId, courseId) {
-  if (!userId || !courseId) throw new Error('Missing userId or courseId')
-  return prisma.enrollment.create({
-    data: { userId, courseId },
-  })
-}
-
-/**
- * Unenroll a user from a course.
- * @param {string} userId
- * @param {string} courseId
- * @returns {Promise<Object>} The deleted enrollment
- */
-export async function unenrollFromCourse(userId, courseId) {
-  if (!userId || !courseId) throw new Error('Missing userId or courseId')
-  return prisma.enrollment.delete({
-    where: { userId_courseId: { userId, courseId } },
-  })
-} 

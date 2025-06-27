@@ -6,6 +6,7 @@ import ClientSidebarDropdown from "@/components/ClientSidebarDropdown"
 import { Card } from "@/components/ui/card"
 import SidebarNav from "@/components/SidebarNav"
 import { auth, clerkClient, User } from "@clerk/nextjs/server"
+import { PropsWithChildren } from "react"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,7 +23,7 @@ export const metadata = {
   description: "Learn vocabulary with AI",
 };
 
-export default async function RootLayout({ children }) {
+export default async function RootLayout({ children }: PropsWithChildren) {
   const { userId } = await auth();
   let user:User | null = null;
   if (userId) {

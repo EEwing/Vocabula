@@ -13,8 +13,16 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Lesson } from '@prisma/client'
 
-export default function LessonFormModal({ open, onOpenChange, chapterId, onLessonCreated }) {
+interface LessonFormModalProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  chapterId: string
+  onLessonCreated?: (lesson: Lesson) => void
+}
+
+export default function LessonFormModal({ open, onOpenChange, chapterId, onLessonCreated }: LessonFormModalProps) {
   const [name, setName] = useState('')
   const [isOptional, setIsOptional] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -28,7 +36,7 @@ export default function LessonFormModal({ open, onOpenChange, chapterId, onLesso
     }
   }, [open])
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError('')
@@ -44,8 +52,8 @@ export default function LessonFormModal({ open, onOpenChange, chapterId, onLesso
       setIsOptional(false)
       onOpenChange(false)
       if (onLessonCreated) onLessonCreated(lesson)
-    } catch (err) {
-      setError(err.message || 'Failed to create lesson')
+    } catch (err: unknown) {
+      setError((err as Error).message || 'Failed to create lesson')
     } finally {
       setLoading(false)
     }

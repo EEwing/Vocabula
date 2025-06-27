@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { CardFooter } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
 
-function slugify(str) {
+function slugify(str: string) {
   return str
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, '')
@@ -12,10 +12,16 @@ function slugify(str) {
     .replace(/\s+/g, '-')
 }
 
-export default function CourseForm({ topics, createCourse, baseUrl }) {
+type CourseFormProps = {
+  topics: Array<{ id: string; name: string }>
+  createCourse: (data: { name: string; slug: string; topicIds: string[] }) => Promise<void>
+  baseUrl: string
+}
+
+export default function CourseForm({ topics, createCourse, baseUrl }: CourseFormProps) {
   const [name, setName] = useState('')
   const [slug, setSlug] = useState('')
-  const [selectedTopics, setSelectedTopics] = useState([])
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([])
   const [loading, startTransition] = useTransition()
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -25,7 +31,7 @@ export default function CourseForm({ topics, createCourse, baseUrl }) {
     setSlug(slugify(name))
   }, [name])
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError('')
     setSuccess(false)
@@ -42,7 +48,7 @@ export default function CourseForm({ topics, createCourse, baseUrl }) {
         setSelectedTopics([])
         router.refresh()
       } catch (err) {
-        setError(err.message || 'Failed to create course')
+        setError((err as Error).message || 'Failed to create course')
       }
     })
   }

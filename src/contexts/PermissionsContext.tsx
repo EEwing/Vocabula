@@ -13,6 +13,12 @@ interface PermissionsObject {
 
 const PermissionsContext = createContext<PermissionsObject | null>(null)
 
+type PermissionsProviderProps = {
+  isOwner: boolean
+  isEnrolled: boolean
+  children: React.ReactNode
+}
+
 /**
  * PermissionsProvider wraps children and provides permission info for a given object.
  *
@@ -21,7 +27,7 @@ const PermissionsContext = createContext<PermissionsObject | null>(null)
  * @param {boolean} props.isEnrolled - Whether the user is enrolled (precomputed)
  * @param {React.ReactNode} props.children
  */
-export function PermissionsProvider({ isOwner, isEnrolled: initialEnrolled, children }) {
+export function PermissionsProvider({ isOwner, isEnrolled: initialEnrolled, children }: PermissionsProviderProps) {
   const [isEnrolled, setEnrolled] = useState(initialEnrolled);
   const value = useMemo(() => ({
     isOwner,

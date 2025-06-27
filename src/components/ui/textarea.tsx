@@ -2,12 +2,12 @@ import React from "react"
 
 import { cn } from "@/lib/utils"
 
-type TextAreaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+type TextAreaProps = Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> & {
   onChange?: (value: string) => void;
 };
 
-export function Textarea({className, onChange: onChange, ...props }:TextAreaProps)  {
-  const handleChange = (e) => {
+export function Textarea({className, onChange: onChange, ...props }: TextAreaProps)  {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange?.(e.target.value);
   }
 

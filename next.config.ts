@@ -5,9 +5,9 @@ const nextConfig: NextConfig = {
     images: {
         domains: ["img.clerk.com"],
     },
-    experimental: {
-        ppr: true,
-    },
+    // experimental: {
+    //     ppr: true,
+    // },
 };
 
 export default withSentryConfig(nextConfig, {

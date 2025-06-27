@@ -4,7 +4,11 @@ import { useState } from 'react'
 import LessonFormModal from '@/components/LessonFormModal'
 import { usePermissions } from '@/contexts/PermissionsContext'
 
-export default function LessonManager({ chapterId, chapterSlug }) {
+export interface LessonManagerProps {
+  chapterId: string;
+}
+
+export default function LessonManager({ chapterId }: LessonManagerProps) {
   const [lessonModalOpen, setLessonModalOpen] = useState(false)
   const { isOwner } = usePermissions()
 

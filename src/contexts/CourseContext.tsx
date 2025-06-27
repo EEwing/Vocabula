@@ -2,8 +2,43 @@
 
 import { createContext, useContext, useMemo } from 'react'
 import { useAuth } from '@clerk/nextjs'
+import { Course, Prisma } from '@prisma/client'
 
-const CourseContext = createContext(null)
+export type CourseWithOwner = Prisma.CourseGetPayload<{ 
+  include: { 
+    owner: true, 
+    chapters: {
+      include: {
+        lessons: {
+          include: {
+            cards: true,
+            _count: {
+              select: {
+                cards: true
+              }
+            }
+          }
+        }
+      }
+    },
+    topics: { 
+      include: { topic: true } 
+    } 
+  } 
+}>;
+
+export type CourseContextValue = {
+  course: CourseWithOwner
+  isOwner: boolean
+  isLoaded: boolean
+}
+
+const CourseContext = createContext<CourseContextValue | null>(null)
+
+type CourseProviderProps = {
+  children: React.ReactNode
+  course: CourseWithOwner
+}
 
 /**
  * Provider component that wraps course data and provides it through context.
@@ -12,14 +47,13 @@ const CourseContext = createContext(null)
  * @param {React.ReactNode} props.children - The children components
  * @param {Object} props.course - The course object with owner information
  */
-export function CourseProvider({ children, course }) {
+export function CourseProvider({ children, course }: CourseProviderProps) {
   const { userId, isLoaded } = useAuth()
-  
-  const contextValue = useMemo(() => ({
+
+  const contextValue: CourseContextValue = useMemo(() => ({
     course,
     isOwner: isLoaded && userId && course?.owner?.id ? userId === course.owner.id : false,
-    isLoaded,
-    userId
+    isLoaded
   }), [course, isLoaded, userId])
 
   return (
@@ -43,35 +77,3 @@ export function useCourse() {
   }
   return context
 }
-
-/**
- * Component that renders its children only if the current user is the owner of the course.
- * Must be used within a CourseProvider.
- * 
- * @param {Object} props
- * @param {React.ReactNode} props.children - The content to render if user is owner
- * @param {React.ReactNode} props.fallback - Optional fallback content to show if user is not owner
- * 
- * @example
- * // Basic usage - only show button to course owner
- * <CourseOwnerOnly>
- *   <Button>Edit Course</Button>
- * </CourseOwnerOnly>
- * 
- * @example
- * // With fallback content for non-owners
- * <CourseOwnerOnly fallback={<p>Only the course owner can edit this content.</p>}>
- *   <Button>Edit Course</Button>
- * </CourseOwnerOnly>
- */
-export function CourseOwnerOnly({ children, fallback = null }) {
-  const { isOwner, isLoaded } = useCourse()
-  
-  // Don't render anything while auth is loading
-  if (!isLoaded) {
-    return null
-  }
-
-  // Render children if user is owner, otherwise render fallback
-  return isOwner ? children : fallback
-} 

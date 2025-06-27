@@ -6,7 +6,7 @@ import Head from "next/head";
 
 
 class SentryExampleFrontendError extends Error {
-  constructor(message) {
+  constructor(message: string) {
     super(message);
     this.name = "SentryExampleFrontendError";
   }

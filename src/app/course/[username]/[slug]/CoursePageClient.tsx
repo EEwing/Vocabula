@@ -15,7 +15,7 @@ function EnrollButton() {
   const { course } = useCourse();
   const [loading, setLoading] = useState(false);
 
-  const handleClick = async (e) => {
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setLoading(true);
     if(isEnrolled) {

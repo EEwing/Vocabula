@@ -5,6 +5,8 @@ import { auth } from "@clerk/nextjs/server"
 
 export async function enroll(courseId: string) {
     const { userId } = await auth()
+    if(!userId) return null
+
     try {
         const enrollment = await prisma.enrollment.create({
         data: { userId, courseId: courseId },
@@ -18,6 +20,8 @@ export async function enroll(courseId: string) {
 
 export async function unenroll(courseId: string) {
     const { userId } = await auth()
+    if(!userId) return null
+
     try {
         return await prisma.enrollment.delete({
         where: { userId_courseId: { userId: userId, courseId: courseId } },
@@ -30,6 +34,8 @@ export async function unenroll(courseId: string) {
 
 export async function updateLessonDescription(lessonId: string, description: string) {
     const { userId } = await auth()
+    if(!userId) return null
+
     const lesson = await prisma.lesson.findUnique({
         where: { id: lessonId },
         include: { chapter: { include: { course: { select: { ownerId: true } } } } }

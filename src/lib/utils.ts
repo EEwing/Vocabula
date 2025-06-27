@@ -2,7 +2,7 @@ import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge"
 import DOMPurify from "isomorphic-dompurify";
 
-export function cn(...inputs) {
+export function cn(...inputs: (string | undefined)[]) {
   return twMerge(clsx(inputs));
 }
 

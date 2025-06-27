@@ -50,10 +50,12 @@ function CardTitle({
   );
 }
 
+export interface CardDescriptionProps extends React.ButtonHTMLAttributes<HTMLDivElement> {}
+
 function CardDescription({
   className,
   ...props
-}) {
+}: CardDescriptionProps) {
   return (
     <div
       data-slot="card-description"
@@ -62,10 +64,12 @@ function CardDescription({
   );
 }
 
+export interface CardActionProps extends React.ButtonHTMLAttributes<HTMLDivElement> {}
+
 function CardAction({
   className,
   ...props
-}) {
+}: CardActionProps) {
   return (
     <div
       data-slot="card-action"

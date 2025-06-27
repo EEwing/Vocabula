@@ -5,13 +5,22 @@ import { Button } from "@/components/ui/button"
 import { deleteCards, saveCardsForLesson } from "@/app/lib/database"
 import { usePermissions } from "@/contexts/PermissionsContext"
 import { Textarea } from "@/components/ui/textarea"
+import { CardView } from "@/app/lib/cardutils"
 
-export function CardField({ cardId, field, idx }) {
+interface CardFieldProps {
+    cardId: string;
+    field: "term" | "translation";
+    idx: number;
+}
+
+export function CardField({ cardId, field, idx }: CardFieldProps) {
     const { updateCard, cards, addCard } = useLesson()
     const card = useCard(cardId)
     const { isOwner } = usePermissions();
 
-    const updateField = (value) => {
+    if(card === undefined) return null
+
+    const updateField = (value: string) => {
         if (field === "term")
             updateCard(cardId, value, card.translation)
         else if (field === "translation")
@@ -21,7 +30,7 @@ export function CardField({ cardId, field, idx }) {
     }
 
     // Handle keydown for Tab/Enter in last cell
-    const handleKeyDown = (e, idx) => {
+    const handleKeyDown = (e: React.KeyboardEvent, idx: number) => {
         if ((e.key === 'Tab' || e.key === 'Enter') && idx === cards.length - 1 && field === 'translation') {
             e.preventDefault()
             addCard()
@@ -63,7 +72,12 @@ export function SaveCardsButton() {
     return <Button className="w-full mt-2" type="button" onClick={saveCards}>Save</Button>
 }
 
-export function RemoveCardButton({ cardView, children }) {
+type RemoveCardButtonProps = {
+    cardView: CardView;
+    children: React.ReactNode;
+};
+
+export function RemoveCardButton({ cardView, children }: RemoveCardButtonProps) {
     const { removeCard } = useLesson()
 
     return <Button variant="destructive" type="button" onClick={() => removeCard(cardView)}>

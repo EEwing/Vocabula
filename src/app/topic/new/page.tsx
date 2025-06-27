@@ -7,7 +7,7 @@ export default async function NewTopicPage() {
   const topics = await prisma.topic.findMany()
 
   // Define a server action for creating a topic
-  async function handleCreateTopic(name) {
+  async function handleCreateTopic(name: string) {
     'use server'
     if (!name || typeof name !== 'string') throw new Error('Invalid topic name')
     return await createTopic(name)

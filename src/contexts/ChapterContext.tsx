@@ -1,10 +1,18 @@
 "use client"
 
+import { Prisma } from '@prisma/client';
 import { createContext, useContext } from 'react'
 
-const ChapterContext = createContext(null)
+export type ChapterWithLessons = Prisma.ChapterGetPayload<{ include: { lessons: true } }>;
 
-export function ChapterProvider({ children, chapter }) {
+const ChapterContext = createContext<ChapterWithLessons | null>(null)
+
+type ChapterProviderProps = {
+  children: React.ReactNode
+  chapter: any
+}
+
+export function ChapterProvider({ children, chapter }: ChapterProviderProps) {
   return (
     <ChapterContext.Provider value={chapter}>
       {children}

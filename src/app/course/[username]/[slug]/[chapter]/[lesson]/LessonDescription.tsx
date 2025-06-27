@@ -19,7 +19,7 @@ export default function LessonDescription({ description, lessonId, isOwner }: { 
     <Card>
         <CardContent>
             <EditableTextBox 
-                value={description} 
+                value={description || ""} 
                 canEdit={isOwner} 
                 onCommit={handleSave}
                 placeholder="Click here to add a description for this lesson"

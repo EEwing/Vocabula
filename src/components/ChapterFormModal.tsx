@@ -13,8 +13,9 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Chapter } from '@prisma/client'
 
-function slugify(str) {
+function slugify(str: string) {
   return str
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
@@ -31,7 +32,15 @@ function getSiteOrigin() {
   return ''
 }
 
-export default function ChapterFormModal({ open, onOpenChange, courseSlug, courseId, onChapterCreated }) {
+interface ChapterFormModalProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  courseSlug: string
+  courseId: string
+  onChapterCreated?: (chapter: Chapter) => void
+}
+
+export default function ChapterFormModal({ open, onOpenChange, courseSlug, courseId, onChapterCreated }: ChapterFormModalProps) {
   const [name, setName] = useState('')
   const [isOptional, setIsOptional] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -50,7 +59,7 @@ export default function ChapterFormModal({ open, onOpenChange, courseSlug, cours
   const siteOrigin = getSiteOrigin()
   const urlPreview = `${siteOrigin}/course/${courseSlug}/${chapterSlug || ''}`
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError('')
@@ -67,8 +76,8 @@ export default function ChapterFormModal({ open, onOpenChange, courseSlug, cours
       setIsOptional(false)
       onOpenChange(false)
       if (onChapterCreated) onChapterCreated(chapter)
-    } catch (err) {
-      setError(err.message || 'Failed to create chapter')
+    } catch (err: unknown) {
+      setError((err as Error).message || 'Failed to create chapter')
     } finally {
       setLoading(false)
     }

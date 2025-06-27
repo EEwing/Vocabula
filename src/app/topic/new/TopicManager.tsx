@@ -2,14 +2,19 @@
 
 import { useState, useRef } from 'react'
 
-export default function TopicManager({ initialTopics, createTopic }) {
+interface TopicManagerProps {
+  initialTopics: Array<{ id: string; name: string }>
+  createTopic: (name: string) => Promise<{ id: string; name: string }>
+}
+
+export default function TopicManager({ initialTopics, createTopic }: TopicManagerProps) {
   const [topics, setTopics] = useState(initialTopics)
   const [input, setInput] = useState('')
-  const inputRef = useRef(null)
+  const inputRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
-  async function handleAddTopic(e) {
+  async function handleAddTopic(e: React.FormEvent) {
     e.preventDefault()
     if (!input.trim()) return
     setLoading(true)
@@ -20,7 +25,7 @@ export default function TopicManager({ initialTopics, createTopic }) {
       setInput('')
       inputRef.current?.focus()
     } catch (err) {
-      setError(err.message)
+      setError((err as Error).message)
     } finally {
       setLoading(false)
     }

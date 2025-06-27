@@ -27,7 +27,13 @@ export default async function NewCourse() {
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 
   // Server action for course creation
-  async function createCourse({ name, slug, topicIds }) {
+  type CreateCourseParams = {
+    name: string
+    slug: string
+    topicIds: string[]
+  }
+
+  async function createCourse({ name, slug, topicIds }: CreateCourseParams) {
     'use server'
     const { userId } = await auth()
     if (!userId) throw new Error('Not authenticated')
