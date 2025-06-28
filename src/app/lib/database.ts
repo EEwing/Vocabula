@@ -159,3 +159,52 @@ export async function saveCardsForLesson(lessonId: string, cardViews: CardView[]
   }
   return results
 }
+
+/**
+ * Save a single card for a lesson. Creates new card if isNew is true, updates existing otherwise.
+ * @param {string} lessonId
+ * @param {CardView} cardView
+ * @returns {Promise<CardView>}
+ */
+export async function saveCardForLesson(lessonId: string, cardView: CardView) {
+  if (!lessonId || !cardView) throw new Error('Invalid input')
+  
+  if (cardView.term.trim() === '' && cardView.translation.trim() === '') {
+    return cardView
+  }
+  
+  if (cardView.isNew) {
+    const created = await prisma.card.create({
+      data: {
+        lessonId,
+        term: cardView.term,
+        translation: cardView.translation,
+        orderIndex: cardView.orderIndex,
+        wordType: '', // default, adjust as needed
+      }
+    })
+    return dbCard(created)
+  } else {
+    const updated = await prisma.card.update({
+      where: { id: cardView.id },
+      data: {
+        term: cardView.term,
+        translation: cardView.translation,
+        orderIndex: cardView.orderIndex,
+      }
+    })
+    return dbCard(updated)
+  }
+}
+
+/**
+ * Delete a single card by its ID.
+ * @param {string} cardId
+ * @returns {Promise<Object>}
+ */
+export async function deleteCard(cardId: string) {
+  if (!cardId) throw new Error('Card ID is required')
+  return prisma.card.delete({
+    where: { id: cardId },
+  })
+}

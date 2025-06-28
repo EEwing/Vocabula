@@ -2,20 +2,22 @@
 
 import { useEffect, useMemo, useState } from "react";
 import RichTextEditor from "./RichTextEditor";
-import { sanitizeUserInput } from "@/lib/utils";
+import { cn, sanitizeUserInput } from "@/lib/utils";
 import { Prose } from "@/components/ui/Text/Prose";
 
 export interface EditableTextBoxProps {
   value: string;
+  manualCommit?: boolean
   onChange?: (value: string) => void;
   onCommit?: (value: string) => Promise<boolean>;
   startMode?: "view" | "edit";
   modeChange?: (mode: "view" | "edit") => void;
   placeholder?: string;
   canEdit?: boolean;
+  onKeyDown?: (e: React.KeyboardEvent<Element>) => void;
 }
 
-export function EditableTextBox({value: initialValue, onChange, onCommit, canEdit=false, placeholder, startMode = "view"}: EditableTextBoxProps) {
+export function EditableTextBox({value: initialValue, manualCommit=false, onChange, onCommit, canEdit=false, placeholder, startMode = "view", onKeyDown}: EditableTextBoxProps) {
     const [revertValue, setRevertValue] = useState(initialValue);
     const [value, setValue] = useState(initialValue);
     const [editing, setEditing] = useState(startMode === "edit");
@@ -39,6 +41,11 @@ export function EditableTextBox({value: initialValue, onChange, onCommit, canEdi
             return () => clearTimeout(timeout);
         }
     }, [success])
+
+    useEffect(() => {
+        setValue(initialValue);
+        setRevertValue(initialValue);
+    }, [initialValue]);
 
     const revert = () => {
         setValue(revertValue);
@@ -72,6 +79,12 @@ export function EditableTextBox({value: initialValue, onChange, onCommit, canEdi
         setSuccess(false)
     }
 
+    const handleBlur = () => {
+        if(!manualCommit) {
+            commit();
+        }
+    }
+
     return <>
         {editing 
         ? <>
@@ -79,18 +92,25 @@ export function EditableTextBox({value: initialValue, onChange, onCommit, canEdi
                 editable={canEdit}
                 value={value} 
                 onChange={setValue}
+                onBlur={handleBlur}
+                onKeyDown={onKeyDown}
                 />
-            <div className="flex gap-2 mt-2">
-                <button className="px-4 py-1 bg-blue-600 text-white rounded" onClick={commit} disabled={saving}>
-                {saving ? "Saving..." : "Save"}
-                </button>
-                <button className="px-4 py-1 bg-gray-300 rounded" onClick={revert}>
-                Cancel
-                </button>
-            </div>
-            </>
+            {manualCommit && 
+                <div className="flex gap-2 mt-2">
+                    <button className="px-4 py-1 bg-blue-600 text-white rounded" onClick={commit} disabled={saving}>
+                    {saving ? "Saving..." : "Save"}
+                    </button>
+                    <button className="px-4 py-1 bg-gray-300 rounded" onClick={revert}>
+                    Cancel
+                    </button>
+                </div>
+            }
+        </>
         : <Prose
-            className={canEdit ? "cursor-pointer" : ""}
+            className={cn(
+                canEdit ? "cursor-pointer" : undefined,
+                !value ? "text-muted" : undefined
+            )}
             dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
             onClick={beginEditing}
             />

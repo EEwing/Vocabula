@@ -27,10 +27,10 @@ export default function CardTable() {
             {cards && cards.map((card, idx) => (
               <TableRow key={card.id}>
                 <TableCell className="px-4 py-2 w-1/2">
-                  <CardField cardId={card.id} field="term" idx={idx} />
+                  <CardField cardId={card.id} field="term" idx={idx} placeholder="Enter term" />
                 </TableCell>
                 <TableCell className="px-4 py-2 w-1/2">
-                  <CardField cardId={card.id} field="translation" idx={idx} />
+                  <CardField cardId={card.id} field="translation" idx={idx} placeholder="Enter translation" />
                 </TableCell>
                 { isOwner && 
                 <TableCell className="px-2 py-2 text-center w-auto">

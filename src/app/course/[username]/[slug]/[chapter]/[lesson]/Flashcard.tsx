@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useLesson } from '@/contexts/LessonContext'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { EditableTextBox } from "@/components/ui/EditableTextBox"
 
 export default function Flashcard() {
   const {cards} = useLesson()
@@ -33,13 +34,19 @@ export default function Flashcard() {
           {/* Front Face */}
           <Card className="absolute w-full h-full flex items-center justify-center text-2xl font-semibold select-none [backface-visibility:hidden]">
             <CardContent className="flex items-center justify-center w-full h-full">
-              {card.term}
+              <EditableTextBox 
+                  value={card?.term} 
+                  canEdit={false} 
+                  />
             </CardContent>
           </Card>
           {/* Back Face */}
           <Card className="absolute w-full h-full flex items-center justify-center text-2xl font-semibold select-none [backface-visibility:hidden] [transform:rotateY(180deg)]">
             <CardContent className="flex items-center justify-center w-full h-full">
-              {card.translation}
+              <EditableTextBox 
+                  value={card?.translation} 
+                  canEdit={false} 
+                  />
             </CardContent>
           </Card>
         </div>

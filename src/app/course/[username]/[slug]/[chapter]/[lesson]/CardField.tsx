@@ -1,54 +1,49 @@
 "use client"
 import { useLesson, useCard } from "@/contexts/LessonContext"
 import { Button } from "@/components/ui/button"
-import { deleteCards, saveCardsForLesson } from "@/app/lib/database"
+import { deleteCard, deleteCards, saveCardForLesson, saveCardsForLesson } from "@/app/lib/database"
 import { usePermissions } from "@/contexts/PermissionsContext"
-import { Textarea } from "@/components/ui/textarea"
 import { CardView } from "@/app/lib/cardutils"
+import { EditableTextBox } from "@/components/ui/EditableTextBox"
 
 interface CardFieldProps {
     cardId: string;
     field: "term" | "translation";
     idx: number;
+    placeholder?: string;
 }
 
-export function CardField({ cardId, field, idx }: CardFieldProps) {
-    const { updateCard, cards, addCard } = useLesson()
+export function CardField({ cardId, field, idx, placeholder }: CardFieldProps) {
+    const { updateCard, cards, addCard, lesson, setCards } = useLesson()
     const card = useCard(cardId)
     const { isOwner } = usePermissions();
 
     if(card === undefined) return null
 
-    const updateField = (value: string) => {
-        if (field === "term")
-            updateCard(cardId, value, card.translation)
-        else if (field === "translation")
-            updateCard(cardId, card.term, value)
-        else
-            throw new Error("Invalid field")
+    const updateField = async (value: string) => {
+        const newCard = { ...card, [field]: value }
+        updateCard(cardId, newCard.term, card.translation)
+
+        const savedCard = await saveCardForLesson(lesson.id, newCard);
+        setCards(cards.map(c => c.id === cardId ? savedCard : c));
+        return true;
     }
 
     // Handle keydown for Tab/Enter in last cell
-    const handleKeyDown = (e: React.KeyboardEvent, idx: number) => {
+    const handleKeyDown = (e: React.KeyboardEvent) => {
         if ((e.key === 'Tab' || e.key === 'Enter') && idx === cards.length - 1 && field === 'translation') {
             e.preventDefault()
             addCard()
         }
     }
 
-    if (isOwner) {
-        return <Textarea
-            data-row={idx}
-            data-col={field}
-            value={field === "term" ? card?.term : card?.translation}
-            onChange={value => updateField(value)}
-            onKeyDown={e => handleKeyDown(e, idx)}
-            placeholder="Enter term"
-            className="w-full border-none rounded-none resize-none"
+    return <EditableTextBox 
+        value={field === "term" ? card?.term : card?.translation} 
+        canEdit={isOwner} 
+        onCommit={updateField}
+        placeholder={placeholder}
+        onKeyDown={handleKeyDown}
         />
-    } else {
-        return <p>{field === "term" ? card?.term : card?.translation}</p>
-    }
 }
 
 export function AddCardButton() {
@@ -79,7 +74,12 @@ type RemoveCardButtonProps = {
 export function RemoveCardButton({ cardView, children }: RemoveCardButtonProps) {
     const { removeCard } = useLesson()
 
-    return <Button variant="destructive" type="button" onClick={() => removeCard(cardView)}>
+    const handleClick = async () => {
+        await deleteCard(cardView.id);
+        removeCard(cardView);
+    }
+
+    return <Button variant="destructive" type="button" onClick={handleClick}>
         {children}
     </Button>
 }

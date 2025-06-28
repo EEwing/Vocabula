@@ -1,6 +1,6 @@
 "use client"
 import { Color, TextStyle } from "@tiptap/extension-text-style";
-import React from "react";
+import React, { useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
@@ -29,13 +29,17 @@ const BubbleMenuItem = ({children, onClick, isActive, className, activeClasses="
     </button>
 }
 
-type RichTextEditorProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> & {
+type RichTextEditorProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "onBlur"> & {
   value: string;
   onChange?: (value: string) => void;
+  onBlur?: (value: string) => void;
   editable?: boolean;
+  onKeyDown?: (e: React.KeyboardEvent<Element>) => void;
 }
 
-export default function RichTextEditor({ value, onChange: onValueChange, editable = true, ...rest }:RichTextEditorProps) {
+export default function RichTextEditor({ value, onChange, onBlur, editable = true, onKeyDown, ...rest }:RichTextEditorProps) {
+  const bubbleMenuRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
   const editor = useEditor({
     editable,
     immediatelyRender: false,
@@ -49,7 +53,7 @@ export default function RichTextEditor({ value, onChange: onValueChange, editabl
           autolink: true,
           defaultProtocol: "https",
           protocols: ["http", "https"],
-        },
+        }
       }),
       Highlight.configure({
         multicolor: true,
@@ -66,9 +70,17 @@ export default function RichTextEditor({ value, onChange: onValueChange, editabl
         class: "focus-visible:outline-offset-8 w-full max-w-none min-h-full focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-offset-4",
       },
     },
-    onUpdate: ({ editor }) => {
-      onValueChange?.(editor.getHTML());
+    onBlur: ({editor, event}) => {
+      const nextFocused = event.relatedTarget as HTMLElement;
+      if(bubbleMenuRef.current?.contains(nextFocused) || editorRef.current?.contains(nextFocused)){
+        event.preventDefault();
+        return;
+      }
+      onBlur?.(editor.getHTML() ?? "");
     },
+    onUpdate: ({ editor }) => {
+      onChange?.(editor.getHTML());
+    }
   });
 
   return <>
@@ -89,14 +101,16 @@ export default function RichTextEditor({ value, onChange: onValueChange, editabl
         />
         <button type="button" onClick={() => editor.chain().focus().unsetColor().run()} className="px-2">Reset Color</button>
     </div> */}
-    {editor &&<BubbleMenu 
-      editor={editor} 
-      shouldShow={({ editor }) => {
-        const { from, to, empty } = editor.state.selection;
-        return editor.isFocused && !empty && from !== to;
-      }}
-    >
-        <div className="popup-menu bg-background rounded-lg color-accent-foreground flex items-center gap-2 p-1 text-xl">
+    <Prose {...rest}>
+      <EditorContent editor={editor} ref={editorRef} onKeyDown={onKeyDown} tabIndex={0}/>
+      {editor &&<BubbleMenu 
+        editor={editor} 
+        shouldShow={({ state }) => {
+          const { from, to, empty } = state.selection;
+          return editor.isFocused && !empty && from !== to;
+        }}
+      >
+        <div className="popup-menu bg-background rounded-lg color-accent-foreground flex items-center gap-2 p-1 text-xl" ref={bubbleMenuRef}>
             <BubbleMenuItem
                 onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
                 isActive={editor.isActive('heading', { level: 1 })}
@@ -167,9 +181,7 @@ export default function RichTextEditor({ value, onChange: onValueChange, editabl
                 suppressDefaultStyles
             ></BubbleMenuItem>
         </div>
-    </BubbleMenu>}
-    <Prose {...rest}>
-        <EditorContent editor={editor} />
+      </BubbleMenu>}
     </Prose>
   </>
 }
