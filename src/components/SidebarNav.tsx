@@ -5,7 +5,6 @@ import Image from "next/image"
 import type { User } from "@clerk/nextjs/server"
 
 export default function SidebarNav({ user }: { user: User | null }) {
-  console.log(user)
   return (
     <nav className="flex flex-col h-full w-full gap-6 px-8">
       <div className="flex flex-col items-center mb-8">

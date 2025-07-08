@@ -55,7 +55,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
                 </aside>
               </div>
               {/* Main content */}
-              <main className="flex-1 w-full px-4 md:px-8 py-4 xl:max-w-1/2">
+              <main className="flex-1 w-3/4 px-4 md:px-8 py-4 xl:max-w-1/2">
                 {children}
               </main>
             </div>

@@ -40,7 +40,6 @@ export async function updateLessonDescription(lessonId: string, description: str
         where: { id: lessonId },
         include: { chapter: { include: { course: { select: { ownerId: true } } } } }
     })
-    console.log(lesson)
     if (lesson?.chapter.course.ownerId !== userId) {
         console.error('Permission denied:', userId, lesson?.chapter.course.ownerId, lessonId)
         return null

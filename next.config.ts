@@ -3,11 +3,15 @@ import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
     images: {
-        domains: ["img.clerk.com"],
+        remotePatterns: [
+            {
+                hostname: "img.clerk.com",
+            }
+        ],
     },
-    // experimental: {
-    //     ppr: true,
-    // },
+    experimental: {
+        ppr: true,
+    },
 };
 
 export default withSentryConfig(nextConfig, {

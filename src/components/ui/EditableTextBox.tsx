@@ -109,7 +109,8 @@ export function EditableTextBox({value: initialValue, manualCommit=false, onChan
         : <Prose
             className={cn(
                 canEdit ? "cursor-pointer" : undefined,
-                !value ? "text-muted" : undefined
+                !value ? "text-muted" : undefined,
+                "whitespace-normal"
             )}
             dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
             onClick={beginEditing}

@@ -1,12 +1,12 @@
 "use client"
 import { Color, TextStyle } from "@tiptap/extension-text-style";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
 import Highlight from "@tiptap/extension-highlight";
 import { Prose } from "./Text/Prose";
-import { cn } from "@/lib/utils";
+import { cn, sanitizeUserInput } from "@/lib/utils";
 
 type BubbleMenuItemProps = {
   children?: React.ReactNode;
@@ -40,9 +40,11 @@ type RichTextEditorProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"
 export default function RichTextEditor({ value, onChange, onBlur, editable = true, onKeyDown, ...rest }:RichTextEditorProps) {
   const bubbleMenuRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<HTMLDivElement>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
+  
   const editor = useEditor({
     editable,
-    immediatelyRender: false,
+    immediatelyRender: true,
     autofocus: true,
     extensions: [
       StarterKit.configure({
@@ -80,8 +82,13 @@ export default function RichTextEditor({ value, onChange, onBlur, editable = tru
     },
     onUpdate: ({ editor }) => {
       onChange?.(editor.getHTML());
+    },
+    onCreate: () => {
+      setIsHydrated(true);
     }
   });
+
+  const sanitizedValue = sanitizeUserInput(value || "");
 
   return <>
     {/* <div className={`absolute z-50 -translate-y-full mb-2 flex flex-wrap gap-2 bg-card rounded-lg p-2 border border-border ${focused ? "" : "hidden"}`} role="tooltip">
@@ -102,8 +109,20 @@ export default function RichTextEditor({ value, onChange, onBlur, editable = tru
         <button type="button" onClick={() => editor.chain().focus().unsetColor().run()} className="px-2">Reset Color</button>
     </div> */}
     <Prose {...rest}>
-      <EditorContent editor={editor} ref={editorRef} onKeyDown={onKeyDown} tabIndex={0}/>
-      {editor &&<BubbleMenu 
+      {/* Show content immediately before editor hydrates */}
+      {!isHydrated && (
+        <div 
+          className="focus-visible:outline-offset-8 w-full max-w-none min-h-full focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-offset-4"
+          dangerouslySetInnerHTML={{ __html: sanitizedValue }}
+        />
+      )}
+      
+      {/* Editor content - hidden until hydrated */}
+      <div style={{ display: !isHydrated ? 'none' : 'block' }}>
+        <EditorContent editor={editor} ref={editorRef} onKeyDown={onKeyDown} tabIndex={0}/>
+      </div>
+      
+      {editor && isHydrated && <BubbleMenu 
         editor={editor} 
         shouldShow={({ state }) => {
           const { from, to, empty } = state.selection;
